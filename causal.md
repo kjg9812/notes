@@ -56,3 +56,21 @@ If our estimator for the propensity score is consistent, then the IPW(Inverse pr
 - discard units that do not have good matches
 #### issue with matching
 - we throw away so much data that we increase our standard error by a lot
+### intuition of matching
+- for each treated unit find the closest control unit: $Y_i(0)$
+- imputing the missing potential outcome
+- averaging the treatment effects for each treated observation yields an estimator for the ATT. this is called a matching estimator
+### why matching
+- matching is nonparametric: no need to specify a model like we did with logistic regression
+    - only need much milder assumptions
+    - matching addresses the curse of dimensionality problem
+        - curse: as confounders grow, its really hard to find values that match
+- matching is interpretable: estimates can be explained intuitively in terms of who is matched to whom
+- matching allows to estimate many different causal quantities
+    - ATE, ATT, CATE, etc
+
+### How do we define closeness?
+- k nearest neighbor matching -> fix a value of K and choose the K closest units to i
+- exact matching
+    - only keep unit i on exactly matched covariates
+

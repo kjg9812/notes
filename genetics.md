@@ -117,6 +117,8 @@ ex. myoD is a mster regulator
 
 #### without regulation of transcription factor stuff
 - if you dont have Pax6 transcription factor, you don't get eyes
+- also cancer
 
 #### iPSCs induced pluripotent stem cells
 - adding particular transcription factors to cells can cause them to change their "fate
+

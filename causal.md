@@ -74,3 +74,23 @@ If our estimator for the propensity score is consistent, then the IPW(Inverse pr
 - exact matching
     - only keep unit i on exactly matched covariates
 
+# 11/7/23
+## Regression
+### Linear Regression
+- model where we take some input and it comes with some output
+- any method of estimating conditional expectation function (CEF) of an outcome Y given X: $E[Y|X]$ 
+- assumes that the CEF is linear in the parameters (coefficients) 
+### Ordinary Least Squares (OLS) estimator
+- how do we come up with good estimate of the coefficients $\beta$
+- minimize the squared prediction erros or the sum of squared residuals
+### Regression with a binary treatment
+- suppose we have a randomized experiment with a binary treatment
+- if we have ignorability, then we can write
+$$E[Y_i|D_i] = \beta_0 + D_i\tau$$
+- how would we get the treatment group mean? adding the control group mean +- the treatment effect -> add the $\beta_0$ and the $\tau$ (what is the treatment group average)
+- $D_i$ is the treatment assignment -> intuitively if $D_i$ is 0 then the control estimator is $\beta_0$
+### Regression Adjustment
+- suppose we have confounders in observational study
+- in regression we just add the confounders to the equation
+- subset the data on the treatment group to fit the model, then fill in potential outcome for every unit
+- then do the same for the control group

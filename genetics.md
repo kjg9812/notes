@@ -122,3 +122,82 @@ ex. myoD is a mster regulator
 #### iPSCs induced pluripotent stem cells
 - adding particular transcription factors to cells can cause them to change their "fate
 
+# 11/8/23
+### HOX genes
+- HOX genes are conserved between different species, but there are many differences that arise
+- how does this variation form?
+- possible that there are changes in the ways that HOX genes are regulated
+- evolutionary changes occur - downstream targets of HOX factors
+### evolution can involve changes in developmental timing
+- hypothesis of human evolution: there's a delay in the juvenile adult transition
+    - chimpanzees mature very quickly, but we don't
+### DMRT transcription factors
+- coordinate expression of sex identities
+- DMRT homologs
+- DMRT factors regulate male traits in all eukaryotes
+
+transcription factor: regulating downstream genes
+
+### sex determination: multifactorial
+- different levels at which "sex" is "determined" (influenced)
+    - pathway to determine chromosomal sex, gonadal sex, phenotypic sex
+### chromosomal sex
+- human sex is determined by a chromosomal signal
+- chromosomal modes of sex determination
+    - XY
+        - human SRY locus on Y
+        - SRY is the gene on Y chromosome that makes transcription factor turning on the male genes
+    - XO
+        - hermaphrodites
+    - ZW
+        - females have two different sex chromosomes
+- non chromosomal ways of determining sex
+    - temperature
+        - ex. turtle laying eggs in certain temperature -> determines female or male
+    - developmental time
+### interpretation of the chromosomal signal determines gonadal sex
+- SRY activates expression of other genes involved in testis development; lack of DMRT1 (transcription factor) results in ovary development
+- testis produce male hormones (eg. testosterone)
+- ovaries produce female hormomnes (eg. estrogen)
+### steroid horomones
+- eg. testosterone
+- steroid because it can penetrate the plasma membrane of the cell
+- binds to a hormone receptor protein
+- transported into a nucleus where it becomes a transcription factor -> turns on genes
+### horomonal control from gonads results in differentiation of duct systems
+- duct system -> system that will produce wolffian tubes to deliver sperm or eggs
+- start off being able to produce both
+- hormones result in male duct system, lack of these hormones results in fallopian tubes
+### somatic sex determination
+- bi potential structure again
+- testosterone converts structure into penis, without it develops female vagina
+### secondary sexual phenotypes
+- puberty initiates further hormonal changes that affect sexual maturation and somatic sexual traits
+    - gonaadal sex identity is still somewhat plastic
+- DMRT1 is also required to maintain male fates of testes and for differentiation of male secondary sexual characteristics
+### female or male example
+- chromosomally woman is male, but phenotypically she is not male
+- alternative hypotheses? 
+    - the SRY gene on the Y chromosome could not be working
+    - another possibility: another gene not on the Y chromosome turned on by the SRY gene
+- the answer: lots of testosterone in body, but not receiving it, transcription factors are not turning on
+- androgens, male specific hormones
+### AIS
+- androgen insensitivty syndrome
+- functional variability due to different mutations, most affecting hormone reception
+### sexual dimorphism
+- sexual dimorphism in bodies
+    - males trend taller
+    - skeletal muscle
+    - skeletal anatomy and bone density
+    - genes in the liver are sex biased
+    - females metabolize drugs faster and store lipids better
+- disease probability
+    - different propensities to disease states due to sexual dimorphism
+    - ex. 80% of autoimmune diseases occur in women
+#### environmental effects on sex development
+- persistent organic pollutants can act as estrogens
+- environmental stress factors act differently on males vs. females
+- sexual differences could result from nutritional factors -> nutrition influences epigenetic modifications
+#### takeaway
+- lots of room for variation in the different steps related to transcription factors and it affects literally everything

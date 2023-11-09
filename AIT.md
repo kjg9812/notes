@@ -200,3 +200,64 @@ const main  = () => {
 document.addEventListner('DOMConentLoaded',main)
 ```
 # 11/8/23
+```js
+const button = document.querySelector('input[type="submit"]')
+```
+old approach
+
+new approach for an application
+- server just sends back data instead of HTML
+- we still make routes with express but use fetch or something to call the API
+
+hybrid
+- server side render the page and have some static html
+- then also make xhr/fetch requests
+
+#### some paths to take
+1. static html/css/js
+    - easiest to maintain
+    - least complex
+    - but what about data? (maybe a 3rd party api, client side js only)
+2. database driven dynamic website
+    - render on server using templating
+    - ux is not as smooth as desktop app (page refreshes)
+    - more simple than heavy frontend application
+    - client can use site with low resources
+        - initial download is smaller
+        - client side js probably less
+3. frontend with an API (single page web app)
+    - one page
+    - all interactions via background requests and client side js
+    - maybe good ux because no page refreshes
+    - this may not work on all clients may not work on low bandwidth
+4. SSR...
+    - render page on server first completely
+    - download client side js afterwards
+    - fetch / xhr requests
+
+### for a single page web app
+- X bring an api
+    - express with route handlers that sends back json
+- X manipulate the DOM
+    - vanilla js
+    - maybe some framework (react, svelte, vue...)
+- background requests
+    - fetch
+    - XMLHttpRequest(older,callback based)
+    - 3rd party library (axios)
+## APIs
+### REST APIs
+- uses http methods to determine the "action"
+- url/path is the resource that you're working with
+'GET'... read data/resource
+'PUT'... addd or update data
+'POST'... add or update data
+
+ex.
+GET /items
+POST /item/add
+GET /item/:item_id
+
+
+### GraphQL
+- have a specific query with json and get json back

@@ -94,3 +94,26 @@ $$E[Y_i|D_i] = \beta_0 + D_i\tau$$
 - in regression we just add the confounders to the equation
 - subset the data on the treatment group to fit the model, then fill in potential outcome for every unit
 - then do the same for the control group
+
+# 11/9/23
+#### Review of Regression
+- fit a model among the control observations, impute Yi(0)
+- do the same for treatment and Yi(1)
+- bootstrap to get standard errors
+- why ATT? sometimes too many control, we get a better view only looking at the treatment
+    - the actual causal effect is sometimes the ATT
+### assumption
+- need regression with constant treatment effects
+- under conditional ignorability we need to include the covariates in the model
+- what assumptions are we making to interpret $\beta$ as an estimate of the treatment effect?
+    - constant treatment effect: treatment effect is constant across units
+$\beta_i$ means we're not under the assumtpion
+- we can deal with this by adding interaction effects to our regression
+
+#### interaction terms
+- what is the $\beta$ here
+- $\beta$ is the CATE with covariate = 0 in the example on the slide
+##### so how do we get the ATE?
+- take a weighted average among the CATES
+- de mean the covarriates
+- subtract the covariate average from that covariate

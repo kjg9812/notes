@@ -261,3 +261,162 @@ GET /item/:item_id
 
 ### GraphQL
 - have a specific query with json and get json back
+
+# 11/13/23
+### single page web app
+- build our own api
+- routes return JSON
+#### endpoints
+GET /api/messages
+[{from:"joe",text:...,created:....}]
+
+POST /api/message
+
+#### setup
+- API
+    - express on port 3000
+- frontend express on 3001
+- browser
+    - will make an initial request to frontend
+    - GET html page
+    - after this, every request will be to the API
+        - which returns JSON
+
+#### in app.mjs
+```js
+import mongoose from 'mongoose'
+
+mongoose.connect(process.env.DSN)
+// const m = new Message({
+//     from: 'joe',
+//     text: 'hello!',
+// })
+
+// const saved = await m.save()
+
+import apiRouter from './routes/api.mjs'
+
+const app = express()
+
+
+app.use(cors())
+app.use('/api', apiRouter)
+
+app.list(process.env.PORT ?? 3000)
+```
+
+### in models/message.mjs
+
+```js
+// define schema for a message
+const MessageSchema = new mongoose.Schema({
+    from: {type:string, required:true},
+    text: {type:String, required: true},
+    created: {type:Date, default: () => {return new Date()}}
+})
+
+const Message = mongoose.model('Message',MessageSchema)
+
+export default Message
+```
+
+### in /routes/api.mjs
+```js
+
+import Message from '../models/Message.mjs'
+//make u a mini app
+// allows you to GET, POST, use middleware etc
+// u can take these routes and attach them to your actual app
+const router = express.Router()
+
+
+router.GET('/messages', (req,res) => {
+    const q = {}
+    const messages = await Messages.find(q)
+    res.json(messages.map(......))
+})
+
+router.POST('/message', async (req,res) => [
+    // how to get the json body?
+    const m = new Message
+])
+
+export{
+    router
+}
+```
+
+#### in public/index.html
+```html
+<!-- include html setup -->
+<body>
+<script defer src="main.mjs"> </script>
+<input id="from" placeholder="from" type="text" name="" value="">
+<input id="text" placeholder="from" type="text" name="" value="">
+<input type="submit" name="" value="send">
+<section id="messages"></section>
+</body>
+```
+
+#### in main.mjs
+```js
+async function sendMessage(){
+    const from = document.querySelector('#from').value
+    const text = document.querySelector('#text').value
+    // to change for fetch for a post
+    // method
+    // content type header
+    // body
+    const opts = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({text, from})
+    }
+    const res = await fetch(url, opts)
+    const data = await res.json
+
+}
+
+// attrs = {className:'foo', id: 'bar'}
+function div(textContent,attrs){
+    const div = document.createElement('div')
+    div.textContent = textContent
+    for(const [n,v] of Object.entries(attrs)) {
+        div.setAttribute(n,v)
+    }
+    document.queryselector('section#messages').append(div)
+    return div
+}
+
+async function getMessages() {
+    const url = 'http://localhost:3000/api/messages'
+    const res = await fetch(url)
+    const data = await res.json()
+    const messages = data.map(m = {
+        return div(`${m.from}: ${m.text}`, {class: "msg"})
+    })
+
+}
+function main() {
+    getMessages()
+    const btn = document.querySelector('#send')
+    btn.addEventListener('click', sendMessage)
+
+}
+main()
+```
+
+### SOP - same origin policy
+- implemented on your browser
+- what happens when there's a cross origin resource request and response
+    - when one of the following is different for a request
+    - protocol, domain, port
+    - ex. an app on port 3001, making background request for a different port
+    - maybe okay for images
+    - but fetch requests may have some restrictions
+        - u cant read the result of a fetch if its cross origin
+        - unless, response has specific headers
+            - allow-access-control-origin: some.domain.foo
+            - use \* for any domain

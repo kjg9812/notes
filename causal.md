@@ -117,3 +117,25 @@ $\beta_i$ means we're not under the assumtpion
 - take a weighted average among the CATES
 - de mean the covarriates
 - subtract the covariate average from that covariate
+
+# 11/14/23
+## Regression and Grouping
+#### studying/grades example
+- confounder could be different majors
+- group data by majors and look within that group; then you see a positive slope
+- run a regression within groups, and average those numbers
+- we can use fixed effects to adjust for unobservable confounders which are constant within group
+#### grouped observations
+- - units grouped into G groups: $S_1,...,S_G$
+- we have an unobserved confounder U
+    - can't condition on U explicitly
+    - can exploit that U is constant within groups
+- basketball roids example
+#### difference between grouped and stratified
+- differences are conceptual
+- methods for stratification will work on goruped data
+- in stratified data:
+    - we observe the covariates that we stratify on, whereas in grouped data we do not
+    - we create strata so that observed confounders are constant within each strata
+    - we know the value of the observed confounder that is associated with a stratum
+

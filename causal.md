@@ -139,3 +139,17 @@ $\beta_i$ means we're not under the assumtpion
     - we create strata so that observed confounders are constant within each strata
     - we know the value of the observed confounder that is associated with a stratum
 
+# 11/16/23
+## Difference in Differences
+#### ex. does anxiety cause students to perform worse in class?
+- cross sectional design: between unit design
+    - unit of analysis is each individual person
+    - one measure, no time component to this
+
+### time series data
+- measure the outcome twice
+- panel data
+    - panel: tracking a unit over time
+- intuitively, two groups in this data
+    - the unit itself
+    - the time of observation

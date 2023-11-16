@@ -201,3 +201,34 @@ transcription factor: regulating downstream genes
 - sexual differences could result from nutritional factors -> nutrition influences epigenetic modifications
 #### takeaway
 - lots of room for variation in the different steps related to transcription factors and it affects literally everything
+
+# 11/15/23
+#### Mosaic Sex
+- cis regulatory elements are mossaic
+    - different cis elements govern a gene's expression in different tissues
+#### sex and policy
+- do societal political definitions of biological sex align with biology?
+    - biological reality is that there are not two discrete categories
+
+#### idealized model
+- a mendelian popuation is an idealized model (null hyp) of a population
+- genes behave as mendelian factors
+    - alleles segregate independently into gametes
+    - alleles at different loci assort independently into zygotes
+- mating (fertilization) is random
+- population size is vastly large (no genetic drift)
+- no mutation
+- no gene flow (no migration bteween populations)
+- all genotypes have identical fitness (neutral - no selection)
+
+**evolution is a change in allele frequency**
+
+#### test of HWE
+1. obtain the observed genotype frequencies in the actual population
+2. calculate the observed allele frequencies in the actual population
+    - make an expectation of what the distribution would look like if there were random mating
+3. use these frequencies to calculate the expected genotype frequencies if the population were in hardy weinberg equilibrium
+4. compare the null predictions of genotype frequencies to the observed genotype frequencies
+
+#### observed genotype frequencies
+- PCR amplify a segment of the gene surroudnign the area in which a deletion distinguishes the 32 allele from the wild type allele

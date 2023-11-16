@@ -421,4 +421,7 @@ main()
             - allow-access-control-origin: some.domain.foo
             - use \* for any domain
 
-a test
+# 11/15/23
+#### websockets
+- not http (own protocol)
+- full duplex communication --> server can send to client and client can send to server any time they want

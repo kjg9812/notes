@@ -425,3 +425,126 @@ main()
 #### websockets
 - not http (own protocol)
 - full duplex communication --> server can send to client and client can send to server any time they want
+
+# 11/20/23
+## React
+- frontend framework (functions, objects, etc for client side js) for
+1. manipulate the DOM
+2. event handling
+3. binding data to DOM elements
+    - when data changes
+    - DOM elements change as well
+4. reuse code through components
+    - bundles of html + js
+    - reuse that bundle in multiple places
+
+#### working with react
+1. online services: codeben, jsbin, stackblitz
+2. vite
+3. next.js
+
+#### props
+- props is a parameter in app function declaration
+- props is populated with the attributes in your JSX
+
+# 11/27/23
+## REACT
+component is a bundle of html, js, maybe data
+- component must return a react element
+- function that tells react how to render an element
+
+props
+- passed down from parent component OR thing doing the rednering
+    - this is not controlled by component (received from parent)
+    - if you mutate prop within component does not rerender
+    - but if passed values change, then component does rerender
+state
+- private data
+- if state changes, then component is re rendered
+- persists through rerenders
+- to work with state, use useState hook
+
+React Hooks
+- add react functionality to functional compoenents
+- this functionality includes features like: state management, working w/ external systems, DOM features that aren't part of react, etc.
+    - you would normally not be able to do this in regular function
+    - eg state... persists between func calls, but regular local variables wouldn't
+
+
+1. hooks should be at the top level (not within some other iner function, cond, loop)
+2. useState's resulting setXXXX function maybe batched (its async)
+
+
+MyComponent.jsx
+```js
+const MyComponent = props => {
+    return <h1>hello<div>{props.person}</div></h1>
+    // return createElement('h1', {className:'foo'}, 'hello')
+}
+export default MyComponent
+```
+- this can use the props
+
+main.jsx
+```jsx
+//import components and stuff
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+// <div>
+//     <MyComponent greeting='hello' person='joe' />
+//     <MyComponent greeting='hi' person='alice' />
+//     <MyComponent greeting='hola' person='bob' />
+// </div>
+    <Clicker />
+    <BinToDec bits="8" />
+)
+```
+- this has props
+
+Clicker.jsx
+```js
+import { useState } from 'react'
+
+// FIRST EXAMPLE
+// const Clicker = () => {
+
+//     // useState will take an initial value for that state
+//     // can also take a function that sets the initial value
+//     // this function is called only once
+//     // this returns array:
+//         // value of state
+//         // a function for setting that state
+//     const [greeting, setGreeting] = useState('hello')
+//     const handleClick = () => {
+//         console.log("i was clicked")
+//     }
+//     return (
+//         <>
+//         <h1>{greeting}</h1>
+//         <h1 onClick={handleClick}>Click Me</h1>
+//         </>
+//     )
+// }
+
+//SECOND EXAMPLE
+const Clicker = () => {
+    return (
+        const [count,setCount] = useState(0)
+        const incrementCount = () => {
+            setCount(count + 1)
+        }
+
+        <h1 onClick={incrementCount}>{count}</h1>
+    )
+}
+export default Clicker
+```
+
+BinToDec.jsx
+```js
+const BinToDec = () => {
+
+}
+
+export default BinToDec
+```

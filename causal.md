@@ -153,3 +153,8 @@ $\beta_i$ means we're not under the assumtpion
 - intuitively, two groups in this data
     - the unit itself
     - the time of observation
+
+# 11/21/23
+### DID
+- assumption: parallel trends assumption
+    - what was special about NJ did not change in the period before and after the policy was implemented

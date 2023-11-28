@@ -158,3 +158,6 @@ $\beta_i$ means we're not under the assumtpion
 ### DID
 - assumption: parallel trends assumption
     - what was special about NJ did not change in the period before and after the policy was implemented
+
+# 11/28/23
+## Instrumental Variables

@@ -496,7 +496,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 //     <MyComponent greeting='hola' person='bob' />
 // </div>
     <Clicker />
-    <BinToDec bits="8" />
+    <BinToDec numBits="8" />
 )
 ```
 - this has props
@@ -542,8 +542,38 @@ export default Clicker
 
 BinToDec.jsx
 ```js
-const BinToDec = () => {
+import {useState} from 'react'
+const BinToDec = ({numBits}) => {
+    const [bits,setBits] = useState(()=> (new Array(isNan(+numBits) ? 4 : +numbits)))
 
+    const handleClick = (evt, i) => {
+        const copy = [...bits]
+        copy[i] = copy[i] === 0 : 1 : 0
+        setBits(copy)
+    }
+
+    const bitElements = bits.map((value,i) => {
+        return (
+            <Bit 
+            handlebitFlip={handleClick} 
+            key={i} 
+            value={value} 
+            />)
+    })
+
+    return (
+        <main>
+        <h1> binary to decimal calc </h2>
+        {bitElements}
+        <Decimal value={parseInt(bits.join(''),2)}>
+        </main>
+    )
+}
+
+const Bit = ({handleBitFlip, value}) => {
+    return (
+        <div onClick={handleBitFlip} className="bit">{value}</div>
+    )
 }
 
 export default BinToDec

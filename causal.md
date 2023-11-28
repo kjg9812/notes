@@ -161,3 +161,66 @@ $\beta_i$ means we're not under the assumtpion
 
 # 11/28/23
 ## Instrumental Variables
+### Experimental Motivation
+- clinical trial: effect of drug A on heart health
+- non-compliance: some people are assigned the treatment but do not take it
+- Z: control or treatment
+    - being assigned the treatment group
+- D: did not take the drug, or took the drug
+    - whether or not they comply
+    - extra layer of complication -> people may not comply to the rules
+    - call this one sided non compliance
+- u: unmeasured confounders between compliance rate and outcome
+    - potential confounders?
+        - culture
+        - political leanings
+        - superstition
+        - religion
+        - geography
+#### what if you condition on D?
+- you will not get a causal effect
+    - conditioning on a mediator (post treatment variable)
+### Observational Motivation
+- causal effect of protest activity on policy change?
+- D is protest
+- Y is policy
+- Z - instrument
+    - rain -> less likely to go protest
+    - and probably doesn't affect policy change
+
+### notation
+- Z is the "instrument"
+- Z denotes whether a unit is assigned to treatment. D is whether a unit complies with the treatment
+    - we assume Z is randomly assigned
+
+### What do we want to estimate?
+- ideally we want the ATE
+- the ATE is the effect of being assigned to **and** complyin- Z is the "instrument" with the treatment
+
+### intent to treat effect
+- one approach because we can't estimate alpha
+- change the quanity of interest - not the effect of the treatment but the effect of assignment to treatment
+- our difference in means between group assigned to treatment and the group not assigned to treatment identifies the **intent to treat** effect
+- even though D isnt randomized, Z still is
+
+### is the ITT enough?
+- the effect of being assigned to treatment
+    - this is not the treatment itself
+- when could these two be different?
+    - whent he process of administering the treatment affects compliance
+    - example: there is a psychological effect of being told to take a drug, versus just being offered it as an option
+- affects generalizability of TE estimates: we don't know if compliance will be different in other populations
+
+### instrumental variables framework
+- dag with Z and U
+    - this setting implies:
+        - randomization of instrument
+        - exclusion restriction
+        - first stage relationship
+        - monotonicity- Z is the "instrument"
+    - also basically to get the effect
+        - you can find the effect of Z on D
+            - which gives you alpha (DY)
+        - and you can find the effect of D on Y
+            - which gives you a combination of lambda and alpha (the arrows between ZD and DY)
+        - thus to get the effect you can take the combination effect and divide by that alpha to isolate the effect

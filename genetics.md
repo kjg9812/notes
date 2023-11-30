@@ -232,3 +232,28 @@ transcription factor: regulating downstream genes
 
 #### observed genotype frequencies
 - PCR amplify a segment of the gene surroudnign the area in which a deletion distinguishes the 32 allele from the wild type allele
+
+# 11/29/23
+### Selection as a mechanism for evolution
+- directional selection will cause anagenesis
+    - results from competition between variants
+    - results in replacement
+- diversifying selection will cause cladogenesis
+    - results from lack of competition between variations (specialization)
+    - results in co existence
+    - splitting of two lineages from common ancestor
+
+### Phylogeny
+- history of relationships can be inferred from DNA sequences
+- phylogeny is informative about the spread of pathogens and cancer metastasis
+- history of human ancestry is revealed in genomic DNA
+
+which trees are the same?
+- check which ones merge into the same branch
+
+### inferrring a tree by parsimony
+- chracters compared are homologous
+- similarities are due more often to shared ancestry than convergence
+- each row is a DNA sequence
+- each taxa is a species
+- DNA sequences are alligned to each other, and there are allignment positions that we think have been inherited

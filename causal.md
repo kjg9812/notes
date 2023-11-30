@@ -225,27 +225,25 @@ $\beta_i$ means we're not under the assumtpion
             - which gives you a combination of lambda and alpha (the arrows between ZD and DY)
         - thus to get the effect you can take the combination effect and divide by that alpha to isolate the effect
 
-# 11/29/23
-### Selection as a mechanism for evolution
-- directional selection will cause anagenesis
-    - results from competition between variants
-    - results in replacement
-- diversifying selection will cause cladogenesis
-    - results from lack of competition between variations (specialization)
-    - results in co existence
-    - splitting of two lineages from common ancestor
+# 11/30/23
+#### 4 major assumptions to make instrumental variables work
+1. randomization of instrument
+    - z is independent of both sets of potential outcomes
+    - no confounder that affects Z that also affects D and Y
+2. exclusion restriction
+    - Z should not affect Y directly
+    - Z only affects Y by way of its effect on D
+3. first stage relationship
+    - instrument should really be predicting treatment -> high correlation
+    - "magnitude" matters for estimator performance - a weak first stage could mean biased instrumental variables estimates
+    - IV estimators are consistent under these assumptions but not **unbiased**
+    - also called the relevance assumption
+4. monotonicity - Z is the "instrument"
+    - Zs effect on D only goes in one direction at the individual level
 
-### Phylogeny
-- history of relationships can be inferred from DNA sequences
-- phylogeny is informative about the spread of pathogens and cancer metastasis
-- history of human ancestry is revealed in genomic DNA
+### what do the IV assumptions get us?
+- not an ATE, but an Local Average Treatment Effect (LATE)
+    - an ATE of a very specific sub population of compliers
 
-which trees are the same?
-- check which ones merge into the same branch
-
-### inferrring a tree by parsimony
-- chracters compared are homologous
-- similarities are due more often to shared ancestry than convergence
-- each row is a DNA sequence
-- each taxa is a species
-- DNA sequences are alligned to each other, and there are allignment positions that we think have been inherited
+#### bad instrument
+the more you use a specific instrument like rain, the less likely the exclusion restriction assumption holds

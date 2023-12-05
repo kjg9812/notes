@@ -578,3 +578,11 @@ const Bit = ({handleBitFlip, value}) => {
 
 export default BinToDec
 ```
+
+# 12/4/23
+- useRef and reference is a way to handle input
+- re render occurs when state changes
+- useEffect is usually necessary for calling a function when something happens
+    - ex. is calling an api, if you fetch normally it will call the api every millisecond because react is re rendering
+    - use effect allows you to connect a function to a state change!
+    - SWR and reactquery are other options to handle fetches

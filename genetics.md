@@ -257,3 +257,19 @@ which trees are the same?
 - each row is a DNA sequence
 - each taxa is a species
 - DNA sequences are alligned to each other, and there are allignment positions that we think have been inherited
+
+# 12/4/23
+Predictions of human ancestry hypotheses
+H1: Out of Eden
+- the outgroup and earliest branches of the tree would have labels from the middle east
+
+H2: Out of Africa
+- same but for african lineages coming out of the bottom of the tree
+
+#### defenses
+- t cells need to be trained, cell mediated response
+- b cells produce antibodies for the humoral response
+    - antibodies immediately recognize and bind to foreign antigens
+
+vaccines hack the system by making antigens
+- allow you to make rapid exponse without going through first exposure

@@ -247,3 +247,26 @@ $\beta_i$ means we're not under the assumtpion
 
 #### bad instrument
 the more you use a specific instrument like rain, the less likely the exclusion restriction assumption holds
+
+# 12/5/23
+### two stage least squares
+- two stage because first stage and intent to treat
+- div intent to treat by the first stage effect to get rid of it
+
+### weak instruments
+- is the first stage strong or weak?
+- the magnitude of the first stage effect influences the accuracy of estimates
+    - we dont use a p value significance test to test the magnitude
+    - instead we use the f statistic
+
+rain rain go away come again another day
+```python
+def getposition(r,c):
+    position = ((r*m) + c)
+    return position
+
+def getrowcol(pos):
+    r = pos // c
+    c = pos // m
+    return (r,c)
+```

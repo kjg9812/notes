@@ -273,3 +273,118 @@ H2: Out of Africa
 
 vaccines hack the system by making antigens
 - allow you to make rapid exponse without going through first exposure
+
+# 12/6/23
+### Sequencing an unknown piece of DNA
+- can take a fragment of the genome and put it into a vector (plasmid) that we know the sequence of
+- fragment is in restriction enzyme site called EcoRI site
+
+### sequencing
+- will it stop here? maybe
+    - small probability that you get a didioxy T and will terminate
+
+# 12/11/23
+### Mendelian Population
+- how are these assumptions violated and what are the results
+1. mating (fertilization) is random 
+    - basis for the binomial distribution of genotypes
+    - if the population has the binomial distribution it is in the HWE (hardy weinberg)
+2. population size is vastly large (no genetic drift)
+    - due to chance, small amount of inbreeding
+        - allele frequencies change (evolution)
+    - evolution means change in allele frequencies
+3. no mutation
+    - evolution depends on the population size
+    - if many individuals, very weak force for evolution
+    - if not too many, maybe strong force
+    - mutation establishes variation
+4. no gene flow (no migration between population)
+    - if constant rate of migration, some sort of equilibrium that results
+    - allele frequencies are changing and evoluion occurs during migration
+5. all genotypes have identical fitness (neutral - no selection)
+    - many genotypes do have differences in fitness, selection results from that, and genotype frequencies change
+    - you can maintain heterozygosity from some forms of selection -> inverse frequency dependent selection (equalize heterozygosity), heterozygote advantage (in certain conditions heterozygotes are advantageous)
+
+### test if population is in HWE
+Using the picture in the slides
+
+**observed frequencies**
+frequency of AA is 25/100 = 0.25
+frequency of Aa = 0.5
+frequency of aa = 0.25
+- frequency of A can be calculated using observed genotype frequencies
+    - $p = 0.25+ \frac{1}{2}(0.5) = 0.5$
+- frequency of a is just 1-p
+    - $q = 1-p = 1-0.5 = 0.5$
+
+**expected frequencies**
+- p^2, 2pq, q^2
+- 0.25, 0.5, 0.25
+
+**how do we test for HWE**
+- do the observed values look like the expected values?
+    - in this case, yes, this population is in HWE
+
+### population examples
+reasons for the population
+1. in HWE, if it was just say selection against homozygous recessive
+2. selection for heterozygotes
+3. diversifying selection, inbreeding
+4. in HWE
+5. not in HWE, inbreeding because heterozygote frequency is lower than expected
+
+### calculating q given f(aa)
+given assumption that population is in HWE
+what is q if f(aa) = 1/9
+
+### selection can change allele frequencies
+- A is dominant and increasing because of directional selection, A is advantageous
+    - but does not become fixed in any of the populations
+    - thus the small a allele is in low frequency and hides in heterozygotes
+if semidominant
+    - fixes fast and increases right away, so big A is recessive
+
+### selection is a result of genetics
+results from:
+1. variation that affects "fitness"
+2. heritabbilty of that variation
+3. ability to multiply that variation in a population
+
+why is evoltuion by selection not ranodom?
+- because of heritability
+- inheritance is not a random process
+
+directional selection will cause anagenesis
+    - results from competition between variants
+    - results in replacement of the less fit variant by the fitter one
+    - there is selection, there is evolution happening within a lineage
+
+diversifying selection will cause cladogenesis
+    - lack of competition between variants (specialization)
+    - results in co existence of two variants
+    - branching in a phylogeny caused by diversifying selection
+
+### human genetic diversity/ancestry
+- shown lineages with labels
+- human origin is probably africa
+
+### types of taxa
+- monophyletic
+    - includes all descendants of a common ancestory and that ancestory
+    - the only taxon type that reflects phylogeny
+- paraphyletic
+    - includes some but not all descendants of a common ancestory and that  ancestory
+    - sometimes convenient, but completely representative of ancestry
+    - ex. apes
+- polyphyletic
+    - includes unrelated taxa (due to convergent similarity)
+    - not reflective of ancestry (not a natural taxon)
+    - different groups same label appleies
+- race is not a biologically relevant category, none are monophyletic
+
+### cancer is cellular evolution
+- where on phylogeny would we look for changes involved in gene metastatis
+- look in the two lineages that have metastatic genes
+
+### testing alternative phylogenetic hypoteses
+- best score is the lowest sum, requires the lowest amount of changes

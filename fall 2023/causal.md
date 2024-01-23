@@ -259,14 +259,12 @@ the more you use a specific instrument like rain, the less likely the exclusion 
     - we dont use a p value significance test to test the magnitude
     - instead we use the f statistic
 
-rain rain go away come again another day
-```python
-def getposition(r,c):
-    position = ((r*m) + c)
-    return position
+# 12/7/23
+### Regression Discontinuity
+- another approach to identification when there is unobserved confoudning
+- treatment is assigned quasi randomly
+- some discontinuity or jump in a continous variable (ex. time periods and prohibition)
+- eploit the fact that treatment is sometimes assigned based on a cut off or threshold value of a continuous running variable
+- subset data to units just above or just below the cutoff - before or after cutoff for time
 
-def getrowcol(pos):
-    r = pos // c
-    c = pos // m
-    return (r,c)
-```
+# 12/12/23

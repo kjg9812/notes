@@ -149,3 +149,92 @@ between hosts
     - ex. mail.google.com
         - subdomain is subdomain, google is Domain, com is TLD
         - there is a distributed system to take strings and turn them into ip addresses, where the hierarchy is root servers, PID servers (com,edu,org), authoritative servers
+
+# 1/31/24
+root servers-> TLD servers(.com,.org,.net) -> servers (google.com)
+Option 1: non authoratiative server: operated by campus nets/ISPs
+- dont need to talk to root server hierarchy, saves a lot of latency
+Option 2: cache DNS mappings
+- a list of hostname and IP address, cache it locally
+
+TCP allows reliable byte string abstraction
+- if you send bytes, you will get bytes on the other side
+
+### Socket Demo
+#### write something that allows us to send data
+```py
+from socket import socket
+sock_object = socket(AF_INET, SOCK_DGRAM) # two arguments -> (family of sockets, type of socket)
+sock_object.sendto(b"hello", ("127.0.0.1",8000)) # two arguments (byte array, (address to send to;currently local host; and port))
+sock_object.sendto(b"hello\n\nhi", ("localhost",8000)) # two arguments (byte array, (address to send to;currently local host; and port))
+```
+
+#### create something that can receive UDP packets on the same machine
+```bash
+nc -l 8000 -u # get me a udp socket attached to port 8000, port distinguishes applications on the same machine
+# this will receive messages from the socket above
+```
+#### python equivalent of above
+```py
+from socket import socket
+sock_receiver = socket(AF_INET, SOCK_DGRAM) # two arguments -> (family of sockets, type of socket)
+sock_receiver.bind(("localhost",8000)) # bind tells socket to attach to specific port number
+sock_receiver.recv(4) # argument tells how many bytes you want to receive
+sock_receiver.setblocking(False) # non blocking, does not wait til data is available, it returns right away
+```
+#### what is the benefit of non blocking -> having data right away or no data
+- you can do other work
+
+### polling - checking different sockets to see if there's data wastes CPU
+- like a while loop constantly checking sockets
+- this reduces latency but takes up all resource
+
+### select system call - the alternative
+- get a bunch of sockets, put in an array
+- one system call select, take entire array as input
+- wait until any of the sockets have data in them
+- sort of like a blocking call on a GROUP of sockets
+```py
+from select import *
+r = select.select([s1.fileno(), s2.fileno()], [],[], 1.0) # returns when one is ready to be written
+# wait on array in filedescriptor array
+```
+#### documentation
+select.select(rlist, wlist, xlist[, timeout])
+This is a straightforward interface to the Unix select() system call. The first three arguments are iterables of ‘waitable objects’: either integers representing file descriptors or objects with a parameterless method named fileno() returning such an integer:
+
+### TCP sockets
+
+#### send data
+```py
+from socket import *
+tcp_socket = socket(AF_INET,SOCK_STREAM) # family is the same, still talking about internet, but type is sock stream referring to byte stream -> hello on one end will come out as hello on the other end, not hello -> olleh
+tcp_client = socket(AF_INET,SOCK_STREAM)
+tcp_client.connect(("127.0.0.1", 8000))
+tcp_client.send(b"hello")
+
+# new client
+tcp_client2 = socket(AF_INET,SOCK_STREAM)
+tcp_client2.connect(("127.0.0.1", 8000))
+tcp_client2.send(b"helloworld")
+```
+
+#### receive data
+```py
+from socket import *
+tcp_server = socket(AF_INET, SOCK_STREAM)
+tcp_server.bind(("127.0.0.1", 8000))
+tcp_server.listen() # not specifying bytes, because its a 3 way handshake, need to be synced up to provide a reliable byte stream, so puts server in a mode to carry out synchronization
+(comm_socket,client_addr) = tcp_server.accept() # for the TCP server, to know how to actually reach the client -> so once tcp server has accepted connection to client, then we can receive data on a different socket, the job of actually receiving and sending data is on a different socket
+comm_socket.recv(5) # note that recv is on a different socket than tcp socket
+
+# this is a new client on the same TCP server
+(comm_socket2,client_addr2) = tcp_server.accept() # accept returns sockets to allow you to interact with all clients connected to you
+comm_socket2.recv(5)
+```
+
+#### why the TCP delagates data send/receive to another socket -> it needs to listen to another connection attempt!
+- this does not exist in UDP, there is no notion of agreeing
+- all TCP guarantees says is that if you send a byte from one end it will get to the other end, does not say anything about the receive
+    - stream finishes when you close
+- byte stream starts with first byte sent after connection established, ends wtih the close call of the client socket

@@ -107,3 +107,5 @@ what is good grammar? chomsky hierarchy defines types of formal grammar
 ### regular expressions
 - standardized way of representing search strings
 '(BB)|([^B]{2})' //to be or not to be
+
+# 2/1/24

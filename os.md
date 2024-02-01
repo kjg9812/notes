@@ -211,3 +211,20 @@ Definition: a process is a program in execution
 - cpu switches from process to process quickly
     - uses a scheduler to do priority
 - this is the illusion -> we think its all executing at the same time, more like the light illusion where multiple things are happening in order really fast
+
+# 2/1/24
+### three state model
+- process is running
+- becomes blocked because its waiting for IO
+- scheduler picks another process that is ready
+- when it detects IO then it becomes ready
+- then scheduler can pick this process
+
+how can you ask the IO if you are not running
+- this is why theres no arrow from ready to blocked
+
+### five state model
+- added "new" and "exit"
+    - exit, when a process finishes it finishes, why should we keep track of it?
+        - 
+    - new, to start, need to ensure that you have security clearance and resources to use things -> then you can be admitted to be ready

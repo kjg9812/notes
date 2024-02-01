@@ -55,3 +55,58 @@ REM - low voltage, random, fast with sawtooth waves
 - k complex is an EEG wave with a well delineated negative sharp wave followed by a slower positive
     - can occur in response to a stimulus (external) but may be spontanenous as well (internal)
 - half of our sleep
+
+# 2/1/24
+### theta waves
+- originate in cortex and hippocampus; daydreaming, drowsiness, trance like states
+- hypothesized for creativy and achieving "flow"
+    - possibly because not thinking about anything else besides the current moment
+
+### whats the point of N2 (sleep spindles and k complexes)
+- sleep spindles -> originate in the thalamus
+    - thought to represent periods when the brain is inhibiting processing to keep the sleeper tranquil
+    - seen in the brain as a burst of activity following a muscle twitch
+    - probably important in memory consolidation (clearing out hippocampus to make room for new memories)
+    - inhibiting brain processes to keep you asleep
+- k complexes -> originate widely in cortex
+    - occur naturally (internally) and in response to external stimuli (eg. touch to skin, sounds)
+    - thought to suppress cortical arousal and aid in sleep based memory consolidation
+    - trying to stop you from waking up if its safe enough
+
+### whats the point of N3 (delta)
+- delta waves -> originate in the thalamus or cortex
+- stimulate the release of several hormones (growth hormones) and inhib the release of TSH (thyroid stimulating hormone)
+- important in declrative memory consolidation
+    - two types of memory: declarative (facts, things you can declare, peoples names), performance (how you do things: play guitar, drive a car, ride bike
+
+### memory consolidation
+- hippocampal ripples increase during sleep after learning
+    - the more increase in ripples, the better the memory consolidation
+- disrupting ripples results in disrupted memory and learning
+
+### what could this possibly have to do with REM?
+- rem may be important for the developing brain, especially during infancy and childhood
+- marijuana decreases REM and deep sleep
+- rem may provide a work out or stimulation for the developing brain which leads to more growth than the baby would otherwise obtain
+- our muscles are most relaxed during rem, which provides a good opportunity for cell repair and immune system
+- rem is good for procedural memory
+
+### memory
+- stage 3 -> weeds out unnecessary neural connections
+    - occurs earlier in the sleep period
+    - moves memory info from short term storage (hippocampus) to long term storage (memory cortex)
+- rem -> strengthens those neural connections that matter for our memory
+    - occurs later int the sleep period
+    - integrates new memories with our backlog of collected memories from the past
+
+### other brain waves
+- gamma waves
+    - observed by digital EEG
+- Mu waves
+
+### the sleep cycle
+- cyclic nature of sleep is relaible
+- rem periods every 90-120 minutes
+- first REM period is shortest
+
+### 

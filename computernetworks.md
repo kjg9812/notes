@@ -238,3 +238,53 @@ comm_socket2.recv(5)
 - all TCP guarantees says is that if you send a byte from one end it will get to the other end, does not say anything about the receive
     - stream finishes when you close
 - byte stream starts with first byte sent after connection established, ends wtih the close call of the client socket
+
+# 2/5/24
+### Reliability problem
+- one host and another host
+- network in between
+    - network can arbitrarily do anything
+    - drop, delay, reorder packets
+    - but it eventually delivers each packet
+- the goal is to send bytes in an order and they should appear in that order on the other end
+- ex. send Hello and we get Hello on the other
+### solution to reliability
+- receiver confirms receipt of packet (acknowledgement or ACK)
+- sender attaches a number to every packet (sequence number)
+- HELLO
+- 01234
+- receiver says they got sequence number 0, 1, etc
+#### stop & wait protocol
+- sender
+    1. Tx(transmit) the 1st packet
+    2. wait for ACK; re tx (re transmit) if needed
+    3. repeat w/ 2nd, 3rd, 4th pkt
+- receiver
+    1. send an ack for just rx pkt
+    2. maintain variable next in order
+    3. if rx pkt's seq number = next in order, increment next in order
+- this cares about in order reliability
+### throughput of stop & wait
+- minimum round trip time
+    - pkt sent, but also ack needs to be sent back
+    - abbreivate as RTT min.
+- Tpt (throughput) = packets per unit time
+- stop and wait -> 1 packet per RTT -> 1/RTT
+- queing delays are more or less 0 because the link capacity exceeds the average throughput going into it
+- ex.  tpy = 120 kbits/sec and capacity = 100 mbits/sec
+- if the link capacities are much lower, then queues will build up
+- but this is only for one conversation going through -> stop and wait doesnt produce enough throughput
+- and for extremes -> we want to keep it under 50%, this warrants increasing capacity
+#### how can we improve throughput of stop and wait?
+- we don't have to wait for ack. -> the line goes idle
+- so maybe instead of waiting, dump more packets into the line
+- number of packets you keep unacknowledged is called the window (sliding window)
+- eventually acknowledge this window of packets
+### how long do you wait for an acknowledgement before a packet is "lost"?
+- wait for the RTT + a little bit of time (epsilon) ; after the RTT the packet is lost
+- this is because the RTT is the time a packet should take and be sent back
+- how does the sender know this time? it keeps timestamp of when it sends and when it gets ack -> this gets RTT for future packets
+#### stats for RTT
+- model RTT as a normal distribution
+- mean and standard deviation
+- RTT is the mean + little bit around it is the sd

@@ -108,4 +108,25 @@ what is good grammar? chomsky hierarchy defines types of formal grammar
 - standardized way of representing search strings
 '(BB)|([^B]{2})' //to be or not to be
 
-# 2/1/24
+# 2/6/24
+### HMM and Part of Speech Tagging
+HMM is describing the probability of the next part of speech based on the current state
+Markov chain means each set of possibilities is only based on the current state
+    - whatever is happening now directs what happens next
+
+### viterbi algorithm
+- two words: fish and sleep
+
+viterbi[s,t] =
+max(s') viterbi[s,t-1] (probability of previous token)
+P(s|s)
+P(..fsdjklfkj)
+- s is state, t is a token
+
+in our training corpus
+- if fish appears 8 times as a noun and 5 times as a verb
+- sleep appears twice as a noun and 5 times as a verb
+Noun
+- p(fish|noun): 0.8
+- p(sleep|noun): 0.2
+....

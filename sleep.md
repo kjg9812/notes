@@ -109,4 +109,17 @@ REM - low voltage, random, fast with sawtooth waves
 - rem periods every 90-120 minutes
 - first REM period is shortest
 
-### 
+# 2/9/24
+### dream def
+- a dream is conscious
+- a dream is accessible to recal
+- a dream occurs during sleep
+
+### who doesnt dream?
+- people who never recall dreaming
+1. one possibility -> they are terrified of revealing themselves
+2. another theory is that these individuals sleep too deeply and are too groggy to focus, recall, and report
+3. a third theory suggest sleep depreivation
+4. medication or marijuana?
+
+

@@ -228,3 +228,133 @@ how can you ask the IO if you are not running
     - exit, when a process finishes it finishes, why should we keep track of it?
         - 
     - new, to start, need to ensure that you have security clearance and resources to use things -> then you can be admitted to be ready
+
+# 2/6/23
+- interrupt -> OS has to take over
+- user mode -> exdcuting any program
+- kernel and OS mean the same
+
+### simple modeling of multiprogramming
+- process spends fraction p of its lifetime waiting for IO
+1-p -> it is not waiting for IO
+- assme n processes in memory at once
+- probability that all processes are waiting for IO at once is p^n
+1-p^n -> at least one process not waiting for io
+- so CPU utilization is 1-p^n
+
+- multiprogramming lets processes use CPU when CPU becomes idle, we want 100% CPU utilization
+
+### executing the OS itself
+- 3 options
+1. separate kernel
+2. OS functions execute within user processes
+3. OS functions execute as separate processes
+which is the best for a single core CPU?
+- a or b, since c adds more processes
+- in b, if part of OS is in the process/code, we reduce system calls and take less time
+- we want to decrease the number of processes -> it decreases if the processes are IO bound -> we'll also have more context switching
+
+### two main challenges again
+- how can OS implement virtualization of the CPU without adding excessive overhead to the system
+    - we want to make sure OS is less heavy in terms of performance
+- how can the OS run processes efficiently while retaining control over the CPU
+    - how can we guarantee the OS runs when it needs to?
+
+### straightforward solution: direct execution
+- OS 
+    - create entry for process list
+    - allocate memory for program
+    - load program into memory
+    - set up stack with argc/argv
+    - clear registers
+    - execute call main()
+- program
+    - run main()
+    - execute return from main
+- OS
+    - free memory of process
+    - remove from process list
+- overview:
+    - no context switches
+    - issues:
+        - Q1: but how does the OS guarantee that main() program won't do anything nasty?
+        - Q2: also, how can the OS stop this process from running and switch to another process if main never executes return and goes into infinite loop?
+### Q1: how to make sure program won't do anything bad?
+- answer: introducing kernel mode and user mode
+    - when process is running in user mode lots of things it cant do
+        - cant read and write in some parts of memory
+#### flow of kernel mode and user mode
+- OS at boot initializes trap table that contains the address of the different trap handles (aka Interrupt service routines)
+    - hardware remembers address of syscall handler
+- OS in kernel mode creates entry for process list, allocates memory, loads program into memory, sets up user stack, fills kern stack, then return from trap (go to user mode)
+    - hardware restores regs, ..., move to user mode, jump to main,
+- program in user mode runs main, make system call, need to trap back into OS
+    - hardware saves regs to kernel stack, move to kernel mode, jump to trap handler
+- OS handles trap, does work of syscall, return from trap
+
+- note: moving from kernel mode to user mode or other way around is purely in hardware
+    
+#### what happend here?
+- processes run at user mode and cannot access the hardware
+- if a process needs something from the hardware, it makes a system call with a specific system call number
+- this switches the machine to kernel mode and the OS starts executing 
+
+### Q2: how do we stop a process from infinite loop
+- if a process is using the CPU, this means the OS is not running (you can scale that to multi processes with multicore)
+- if so, how can OS stop a process to switch to another process?
+- solution: timer interrupts
+
+#### timer interrput
+- a device programmed to raise and interrupt every x milliseconds
+     - is set by the OS
+     - OS starts the timer at boot time
+- kernel mode activated every x ms
+- when the interrupt occurrs, the machine switches to kernel and the OS takes control
+    - the scheduler part of the OS
+    - the scheduler decides: continue running the current process or context switch to another one
+
+### APIs for dealing with processes in C
+- need to include header files
+    - header files -> contains function definitions, has some predefined functions and variables without a main
+    - a library is already precompiled
+```C
+#include<unistd.h>
+#include<sys/types.h>
+#include<sys/wait.h>
+```
+### basic syscalls for managing processes
+- `fork` spawns new process
+    - called once, returns twice
+- `exit` terminates own process
+    - puts it into zombie status until its parent reaps
+- `wait` and `waitpid` wait for and reap terminated children
+- `execve` runs new program in existing process
+    - called once, never returns
+
+#### fork: creating new processes
+```c
+int fork(void)
+```
+- creates new process (child process) that is identical to the calling process (parent process)
+- fork is called once but returns twice
+    - return once to me with process id, and return 0 to the child process
+    - this is so you can make parent or child do something different
+```c
+pid_t pid = fork();
+if (pid == 0){
+    printf("hello from child\n");
+} else {
+    printf("hello from parent: child pid is %d\n", pid);
+}
+```
+
+ex 1
+x = 2
+x = 0
+last statement executed twice
+Bye from process pid with x = 2
+Bye from process pid with x = 0
+
+- two things going on here, child and parent executions
+- new child has its own address space and everything
+- new variables and stuff too

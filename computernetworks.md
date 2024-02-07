@@ -1,3 +1,5 @@
+# Computer Networks
+- Professor: Anirudh Sivaraman
 # 1/22/24
 ### Application Layer
 #### How does a computer communicate with another?
@@ -285,6 +287,82 @@ comm_socket2.recv(5)
 - this is because the RTT is the time a packet should take and be sent back
 - how does the sender know this time? it keeps timestamp of when it sends and when it gets ack -> this gets RTT for future packets
 #### stats for RTT
+RTT and stats
 - model RTT as a normal distribution
 - mean and standard deviation
 - RTT is the mean + little bit around it is the sd
+signal processing to estimate mean and sd
+- basically averaging past mean and most recent sample
+- timeout (the little time that we add) is set to 4 standard deviations away
+# 2/7/24
+### From last time
+- retransmission timeout
+- timeout = $\mu + 4\sigma$
+- Pr(RTT > Timeout) should be small
+    - also called the probability of spurious retransmission
+- how to find $\mu$ and $\sigma$?
+    - exponentially weighted moving average
+    - formula on slides
+#### note
+- throughput of stop & wait is quite low
+- 1/RTT
+- this is because we're waiting for an acknowledgement after every packet send
+### Sliding Window Protocol - Sender
+- we want reliable and in order delivery
+- Sender
+    1. send out w packets at once
+    2. wait for ack for any of these w
+    3. when you get an ack, release 1 more pkt
+- sending out w packets at once, theres still a gap between sending the packets
+    - this is because we can only send one at a time. Why?
+        - voltages, transmission delay
+- window is the packets that havent been acknowledged, so you can add a new packet at the end of the window every time you get an ack
+- formal def -> window: set of unacknowledged packets
+    - window slides from [0,1,2,...,w-1] to [1,2,...,w] to [2,3,...,w+1]
+- invariants: Always keep w pkts unacknowledged
+- packet conservation principle: put a packet in for every packet out
+### sliding window - receiver
+- Receiver
+    1. ack every packet you receive
+    2. receiver might have to buffer out of order packets
+        - packets that do not form a contiguous sequence
+        - why might this happen?
+            - scenario: sender sends w packets
+            - S: [0,...,w-1]
+            - R: {0,2,5,...,w-1}
+                - sender realizes 1 was dropped so it decides to retransmit
+                - 0 enters buffer then delivers to the app since its inorder
+            - then R: {1,2,5,...,w-1} this is the buffer
+                - now 0,1,2 can be delivered to the application
+            - then R: {5,...,w-1}
+    - just need to look for in order packets, and send those out
+        - nextinorder variable
+        - what if buffer looks like R: {15,16,17,18,20,21}
+            - nextinorder = 14
+        - so then R: {14,15,16,17,18,20,21}
+            - after sending 14-18 acks
+            - nextinorder = 19
+    - how does the sender know to retransmit if a packet is dropped?
+        - that RTT and timeout time
+        - the invariant is satsified because if you realize a packet is dropped then w is decreased then you send it again and w is increased again
+### sliding window throughput
+- send out w packets, an RTT min later, you get w acks
+- 1/c is the time between the w packets sends, but its actually w/c
+    - we can assume this is very small w/c << RTT min
+- so the throughput is w/RTT min
+    - big win against stop and wait
+- can you keep increasing w and get more and more throughput?
+    - run out of capacity
+    - once w > c,then w = c
+- tpt = min(w/RTT, c)
+    - you cant send more than the capacity of the link
+- when w/c becomes comparable to RTT min, arrows sent will start overlapping arrows coming back
+    - bandwidth delay product w>c*RTTmin
+        - want this to be close to bdp but you dont want it to overlap
+- so window needs to be close to the bandwidth delay product (the point when w exceeds cRTTmin)
+- when w exceeds BDP -> you get queuing delays, because your throughput to a link exceeds the output
+    - Q(in packets) = w-c*RTTmin
+    - c is the speed that Q drains -> so speed to get through the queue (queue latency) is Q/c
+    - Q (Q such packets that need to be serviced) * 1/c (service time)
+
+    

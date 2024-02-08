@@ -109,7 +109,7 @@ what is good grammar? chomsky hierarchy defines types of formal grammar
 '(BB)|([^B]{2})' //to be or not to be
 
 # 2/6/24
-### HMM and Part of Speech Tagging
+# HMM and Part of Speech Tagging
 HMM is describing the probability of the next part of speech based on the current state
 Markov chain means each set of possibilities is only based on the current state
     - whatever is happening now directs what happens next
@@ -247,3 +247,123 @@ P(m1 | s)
     - choose the higher one
     - in this case it was [DT NN VB DT NN], which is correct
     - THE FANS WATCH THE RACE
+
+# 2/8/24
+### implementing viterbi in python
+- dictionary that maps a part of speech to a bunch of words
+    - likelihood: {DT: {the:5, a:6, an:7}}
+    - tag DT occurs as word 'the' 5 times
+- dictionary that maps POS to POS
+    - transition: {DT: {NN:5,VS:7}}
+    - tag DT transitions to NN 5 times
+    - first state will be "Begin_Sent" and last will be "End_Sent"
+- maybe have a set that contains the words that occur once
+    - this is so we can detect OOV(out of vocabulary) words
+
+### BIO tags
+- way to recognize multi token chunks using viterbi
+- B //begin constituent
+- I //inside constituent
+- O // outside constituent
+- ex. Adam /B-Name Meyers /I-Name teaches /O-Name at /O-name
+- idea is to take tags on single words and use it to mark something in a span
+
+# Vector Similarity
+- vectors represent documents, blocks of text or phrases
+- use words to classify documents and blocks of text
+    - information retrieval, question answering
+        - retrieve documents that are "similar" to query
+    - document classification, sentiment analysis
+        - using similarity to group similar doucmnets
+### documents and chunks of text
+- doucment //vector representing its parts
+    - parts are words, n-grams, chunks...
+    - and measuring each part's importance
+- 2 documents represented by vectors
+    - you can measure similarity using vector similarity
+    - documents within a genre, documents with same "sentiment" (sentiment analysis)
+        - prof is hesitant of sentiment analysis because the data is questionable
+### ad hoc information retrieval (IR)
+- given a collection of documents and a query
+    - ex. set of recipes and query "chicken soup with noodles"
+- find documents that "best" match the query
+- assumptions:
+    - each document is a bag of terms
+    - each query is a bag of terms
+- so a bag of words, undordered set of words like chicken or word sequences like "ice cream" or "frying pan"
+- so a term can be a word, a bigram (2 consec words), trigram, noun group, etc
+- query is user input, typically set of terms
+- goal is to find doucments that are closest to the query and maybe rank them
+- big example of this -> web search
+    - IR is a component but there's other components as well
+    - another component like googles pagerank determines that there's a lot of links pointing to this page (prominence)
+### vector representations
+ex. Chicken soup with noodles as a query
+bean: 0, chicken: 5.4, noodle:2.7, stew: 0, soup:5.1
+ex. recipe for chicken rice stew
+bean: 0, chicken: 16.2, noodle: 0, stew: 3.1, onion: 2.7
+- when comparing these you can intuitively see
+    - look for same positions with zero values
+    - smaller difference between non zero values
+    - most "important" positions tend to be similar
+- but how do we quantify this process?
+
+### TFIDF = common weight for vector
+- scoring a term for how "important" it is in a document
+- term frequency -> number of times a term t occurs in document
+- inerse document frequency: reciprocal of portion of large document set that contains term t, normalized with log function
+    - measure of how rare a term is
+    - if a term is in lots of different documents, it will have a low score
+    - if it is in small number, it will have a high score
+- TFIDF(t) = TF(t) x IDF(t)
+    - so its scores terms highly that occur frequently in a doc or query
+    - and scores terms highly that are infrequent in collection
+- so TFIDF(t) is high if t is more frequent in document d than t is in most documents
+
+#### an example
+- noodle
+    - occurs 3 times in chicken noodle soup with coconut recipe
+        - term frequency = 3
+    - occurs in 4 out of 10000 documents in collection
+    - inverse doc frequency is log(10000/4) = log(2500) = 7.82
+    - TFIDF = 3x7.82 = 23.46
+- tablesppon
+    - occurs 4 times
+    - occurs in 1200 out of 10000 documents
+    - IDF = log(10000/1200) = log(8.33) = 2.12
+    - TFIDF = 4x2.12 = 8.48
+- so noodle is more highly weighted than tablespoon
+
+### cosine similarity: common similarity score
+- commonly used with TFIDF for two vectors to measure the similarity
+- so TFIDF scores words that build a vector for a document, and cosine similarity measures the angle between the two vectors
+- its the cosine of the angle between the vectors
+- smaller angles have higher cosines
+    - but we want a small angle between vectors
+- if query is A and document is B
+- cosine similarity is high if values of a and b are similar
+- maximum = 1, if a = b
+- values in the vectors are TFIDF scores for each document or query
+![image](images/cosine.png)
+- dot product the two vectors for the numerator
+- denominator -> square all the values of vector first, then dot product, then take square root
+
+
+### evaluation metrics
+- correct = length(system output joined with answer king)
+- precision: correct / len(system output)
+- recall: correct / len(answer key)
+- f measure = 2 / (1/precision) + (1/recall)
+
+### why might we want higher precision/recall?
+- voice recognition of helicopter commands
+    - precision is more important than recall
+    - an error is a disaster, better to produce no output and let pilot keep control
+- finding lost children
+    - recall is more important than precision
+    - missing a child is a disaster, better to question some children who are not lost
+
+### MAP - Mean Average Precision
+- compute the precision at several levels of recall, then average
+    - if high ranked items in list tend to be better, the score is higher
+- 

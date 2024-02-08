@@ -121,5 +121,3 @@ REM - low voltage, random, fast with sawtooth waves
 2. another theory is that these individuals sleep too deeply and are too groggy to focus, recall, and report
 3. a third theory suggest sleep depreivation
 4. medication or marijuana?
-
-

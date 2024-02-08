@@ -132,7 +132,7 @@ Noun
 ....
 
 
-# video notes on Part of speech tagging
+# video notes on Part of Speech Tagging
 ### part of speech
     - pronoun
     - verb
@@ -153,7 +153,14 @@ Noun
             - each word is an observed variable
             - hidden variables are the part of speech
             - so observing words, what is the most likely part of speech? maximize the combinations of part of speech that gives us the highest probability of these words
-### Hidden Markov Model
+    - MAX P(p1...pn,w1,...,wn)
+        - p being parts of speech
+        - w being words
+        - say n is 5 for p
+            - then combinations is 5^10 -> 10 million combinations
+            - this is way too large esepcially since there are more than 5 parts of speech
+        - in comes **viterbi algorithm**
+# Notes on Hidden Markov Model
 - ex. professor is one of two moods (happy or sad)
     - mood on a given day depends only on mood from previous day
     - if professor is happy on t-1 (previous day) -> 0.7 change she'll be happy today and 0.3 change she'll be sad today
@@ -174,6 +181,7 @@ Maximize the probability (c1,c2,c3,m1,m2,m3)
     - 3 colors on each day and 3 moods for each day
     - which combinations of moods gives us the highest probability
         - so the proabbility of seeing this color sequence with these moods are maximized -> so its the most likely sequence of moods
+
 this is the probability broken up
 P(c3 | c2c1m3m2m1)
 P(c2 | c1m3m2m1)
@@ -191,3 +199,51 @@ P(m2 | m1)
 P(m1 | s)
 - so the probabilities become this
 - we find that the highest probability of moods is {S S H} sad sad happy
+
+# Notes on Viterbi Algorithm
+- key idea of Part of Speech tagging is to use hidden markov model
+- but how do we do this efficiently?
+#### an example
+"THE FANS WATCH THE RACE"
+- THE is a determiner
+- FANS WATCH and RACE can be nouns or verbs
+- 8 possibly combinations for part of speech tagging
+- so we have p1, p2, p3, p4, p5 , one for each word
+- we want MAX P(p1,p2,p3,p4,p5, THE, FANS, WATCH, THE, RACE)
+- broken down this is MAX $\prod \mathbb{P}(p_k|p_{k-1}) \prod \mathbb{P}(w_k|p_k)$
+    - transmissions first product
+    - emissions second product
+- go back to HMM probability list if confused, you can see that part of speech only depends on part of speech from previous part of speech and word only depends on the part of speech
+- we need data for transitions and emissions probabilities
+    - these are from empirical data -> underlying training set where parts of speech are labeled
+    - this ends up in a 2d table with parts of speech on one axis, words on another axis, and their probabilities
+        - ex. determiner and THE has probability 0.2
+        - ex. noun and WATCH has probability 0.3
+        - in our case these highest probabilities are wrong for our sentence! the viterbi alg with solve this, these are just raw probabilities from data
+#### where are we saving time with viterbi?
+- this is that flow tree
+![image](images/viterbi.png)
+- THE FANS WATCH THE RACE
+- START -> THE
+    - first question: given start of sentence what is probability that first word is determiner and that is the word THE
+    - two numbers, one from transition, one from emission
+        - 0.8 first word determiner, 0.2 determiner and the word THE
+    - multiply together to get 0.16
+        - this number represents if we cut off the sentence right there, whats the probability of observing this information, so so far Determiner start and THE
+- next pretend we assign FANS as a noun
+    - whats the probability we transition from determiner to noun 0.9
+    - whats the probability that the noun is FANS 0.1
+    - multiply with previous 0.16 -> 0.0144
+        - so this is THE FANS with FANS as a noun
+- but what if FANS is a verb
+    - 0.1 and 0.2 (same process as above) to get 0.0032 with THE FANS with FANS as a verb
+    - this is lower prob, why not just stop this branch?
+        - we dont know whats gonna come next, the prob could be higher later in this chain
+- basically multiply part of speech transition (verb to noun, noun to verb, etc) and probability that the word is a certain part of speech (THE is a determiner, WATCH is noun or verb, etc)
+- you can discontinue paths that have a lower probability if there are two pathways to the same node
+    - ex DT NN NN has 0.026 and DT VB NN has 0.00048 so DT NN NN is smaller but we arrived at the same NN node
+    - this is why Viterbi is more efficient!
+- so get to the last word and you should have possibly multiple probabilities
+    - choose the higher one
+    - in this case it was [DT NN VB DT NN], which is correct
+    - THE FANS WATCH THE RACE

@@ -365,4 +365,5 @@ signal processing to estimate mean and sd
     - c is the speed that Q drains -> so speed to get through the queue (queue latency) is Q/c
     - Q (Q such packets that need to be serviced) * 1/c (service time)
 
-    
+queue delay = w/c - Rttmin
+- want w to exactly hit the BDP, w=BDP

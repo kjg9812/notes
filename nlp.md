@@ -130,3 +130,64 @@ Noun
 - p(fish|noun): 0.8
 - p(sleep|noun): 0.2
 ....
+
+
+# video notes on Part of speech tagging
+### part of speech
+    - pronoun
+    - verb
+    - determiner
+    - noun
+    - etc.
+- how do we get a computer to identify these?
+    - also if we have words, what should we expect next?
+#### Methods for this
+- rule based
+    - if -> then
+    - ex. if theres a noun, then there will be a verb
+    - based on linguistics
+    - so many cases to consider though
+- stochastic (probability based)
+    - hidden markov model
+        - "i eat pizza"
+            - each word is an observed variable
+            - hidden variables are the part of speech
+            - so observing words, what is the most likely part of speech? maximize the combinations of part of speech that gives us the highest probability of these words
+### Hidden Markov Model
+- ex. professor is one of two moods (happy or sad)
+    - mood on a given day depends only on mood from previous day
+    - if professor is happy on t-1 (previous day) -> 0.7 change she'll be happy today and 0.3 change she'll be sad today
+    - if sad on t-1 -> 0.5 happy 0.5 sad today
+    - these are called the transition probabilities
+- emission probabilities
+    - color shirt she's wearing depends on mood of a given day
+    - new distribution
+    - if happy (0.8 red, 0.1 green, 0.1 blue)
+    - if sad (0.2 red, 0.3 green, 0.5 blue)
+- so the markov model contains transition probabilities (hidden states) and the emission probabilities (these are what we actually observe)
+    - hidden states directly affect observed states
+- say its 3 days in the course and professor wears green, blue, red shirt on those 3 consecutive days
+C1 = G, C2 = B, C3=R
+    - what are the most likely moods of the professor on these days?
+    - so based on what we're seeing, what is the most likely hidden state?
+Maximize the probability (c1,c2,c3,m1,m2,m3)
+    - 3 colors on each day and 3 moods for each day
+    - which combinations of moods gives us the highest probability
+        - so the proabbility of seeing this color sequence with these moods are maximized -> so its the most likely sequence of moods
+this is the probability broken up
+P(c3 | c2c1m3m2m1)
+P(c2 | c1m3m2m1)
+P(c1 | m3m2m1)
+P(m3 | m2m1)
+P(m2 | m1)
+P(m1)
+- but the probability of color shirt on a certain day only depends on the mood on a certain day -> this is the assumption
+- and the probability of a mood on one day only depends on the mood of the previous day -> the markov assumption
+P(c3 | m3)
+P(c2 | m2)
+P(c1 | m1)
+P(m3 | m2)
+P(m2 | m1)
+P(m1 | s)
+- so the probabilities become this
+- we find that the highest probability of moods is {S S H} sad sad happy

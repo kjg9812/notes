@@ -363,7 +363,99 @@ signal processing to estimate mean and sd
 - when w exceeds BDP -> you get queuing delays, because your throughput to a link exceeds the output
     - Q(in packets) = w-c*RTTmin
     - c is the speed that Q drains -> so speed to get through the queue (queue latency) is Q/c
-    - Q (Q such packets that need to be serviced) * 1/c (service time)
+        - Q (Q such packets that need to be serviced) * 1/c (service time)
 
 queue delay = w/c - Rttmin
 - want w to exactly hit the BDP, w=BDP
+
+# 2/12/24
+### Congestion Collapse
+- w >> w*
+    - w is much greater than w* (w* is the BDP)
+- figuring out w* is hard:
+    - w* = (c x RTTmin)/n
+    - c is unknown because capacity can keep varrying over time
+    - RTTmin is min RTT
+    - n is # of flows
+        - flow = sender - receiver pair
+### congestion collapse informally
+- when w > w*
+    - large queuing delays
+    - trigger retransmissions
+    - queue has many duplicate of the same packet
+        - because packets stuck in queue, but sender still times out
+        - c is packets coming out per second
+        - time between 1 packet and the next coming out of queue -> 1/c
+        - number of unique sequence numbers per unit time (if every packet has one duplicate) -> c/2
+            - the "goodput", useful work that the link is doing
+- no/little dropped packets
+- crowded room example
+- tragedy of the commons
+- if a lot of people are using the same band, no one can hear
+
+### cong collapse, formally
+- offered load (input to the system)
+- utility function & agg utility function
+- offered load is increasing but agg/overall utility is decreasing
+
+### setup for congestion collapse
+1. n flows
+2. each flow has a window W
+    - effective window = nW
+3. each flow has same min RTT -> RTT
+4. share the same bottleneck link
+    - bottleneck -> exactly where the queues build up that causes congestion
+5. bottleneck link capacity is C
+6. link has infinite buffers (never drops a packet)
+7. no ReTx at all
+8. utility function for each flow
+    - Throughput/Latency
+9. Agg utlity function = Sum_f Tf/Lf
+
+# 2/14/24
+### Congestion Collapse Leads to Intuition About Window Size
+- instead of a set window size, realized that the window size should be adapted
+- adaptively find a sliding window size equal to the BDP of their network
+
+### AIMD Algorithm
+- the algorithm to adjust window size
+- two aspects:
+1. slow start
+    - how you get to the right value of window size
+2. congestion avoidance
+    - maintain right value of window size when you get there even when senders are coming and going -> compensate for packets not being sent anymore
+
+### slow start
+- goal: $W_{target} = w^*/n = c*Rtt_{min}/n$
+- get to this W target (correct window size)
+- binary search alg
+
+### congestion avoidance
+- additive increase or multiplicative decrease to maintain the window size
+- so slow start gets you to a target value, and congestion avoidance lets you dance around that target value
+
+### So the alg
+1. start with w=1
+2. mult. increase w til packet loss (2*W)
+3. mult decrease w (w = w/2)
+4. additive increase w (w = w+1)
+5. mult decrease w on loss (w = w/2)
+- note: theres no concept of time
+- time is increased as acks are sent back
+- how to increase w for slow start?
+    - increase w by 1 for every ack (every ack) is the same as 2*w_t(every RTT)
+- if you have a timeout: w = w/2
+    - a sender gets impatient and retransmits
+- congestion avoidance
+    - w_{t+1} = w_{t} + 1 -> additive increase for every RTT (t is RTT second -> time)
+    - so for every ack -> w = w + 1/w
+
+### why the combination of additive increase and multiplicative decrease (AIMD)
+- you want to be fair, window size to be fair
+- you also want window size to be w*
+- so for two windows for two people, theres an intersection between fair and efficient
+- MIMID for two windows would make them stay on the same line goig down to 0, AIAD as well but perpinducular to the efficiency line
+- MIAD is unstable
+    - you don't come back nearly enough, and the next MI takes you farther away from the initial starting point
+
+

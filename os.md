@@ -348,7 +348,7 @@ if (pid == 0){
 }
 ```
 
-ex 1
+#### ex 1 on slides
 x = 2
 x = 0
 last statement executed twice
@@ -358,3 +358,284 @@ Bye from process pid with x = 0
 - two things going on here, child and parent executions
 - new child has its own address space and everything
 - new variables and stuff too
+
+# 2/9/24
+- fork
+    - parent and child both run same code
+    - start with same state, but each has private copy of memory
+        - including shared output file descriptor
+        - relative ordering of their print statements undefined
+    - pid_t is same as int
+    - pid for child is 0, pid for parent is the id of the child process
+
+#### example 2 on slides
+L0
+L1
+L1
+Bye
+Bye
+Bye
+Bye
+- so fork, after you call it, everything after will be executed by the parents and the children
+
+#### example 4
+- you can set conditionals, so only if fork() does not return the child
+    - if the fork is the parent
+
+### exit: ending a process
+- void exit(int status)
+    - exits a process
+        - normally return with status 0
+    - atexit(function_name) make function_name execute upon exit
+```C
+void cleanup(void) {
+    printf("cleaning up\n")
+}
+void fork6() {
+    atexit(cleanup);
+    fork();
+    exit(0);
+}
+```
+
+### zombies!
+- when process terminates, still consumes system resources (ex. an entry in process table)
+    - why? so that parents can learn of children's exit status
+- called a "zombie"
+- reaping
+    - performed by parent on terminated child
+    - parent is given exit status information
+    - OS discards process
+- what if parent doesn't reap?
+    - if parent has terminated, then child will be reaped by init process
+- in linux, ps shows processes with their PID
+    - kill (pid) stops the process
+
+### wait: synchronizing with children
+- int wait (int *child_status)
+    - blocks until some child exits, return value is the pid of terminated child
+    - if multiple children completed, will take in arbitrary order(use waitpid to wait for a specific child) 
+
+### execve
+- int execve(char *fname, char *argc[], char *envp[])
+    - executes program named by fname
+    - name of executable and the arguments of that executable
+    - execute code ps, first it will fork, that child will do the same thing
+    - so if pid = fork() = 0 -> child
+        - then replace process with new process loaded from the file
+    - basically, if you have a child, your child will execute code from a different program rather than the parent
+
+# 2/13/24
+### scheduling
+- given a group of ready processes, which process to run next?
+#### when to schedule
+- when a process is created
+    - new process might have higher priority
+- when a process exits
+    - that means process is done
+- when a process blocks
+    - need new process
+- when an io interrupt occurs
+    - blocked to ready process
+### definition
+- preemptive scheduling: a process can be interrupted, and another process scheduled to execute
+- non premptive scheduling: the current running process must finish/exit first before another process is scheduled to execute
+
+# 2/15/24
+### scheduling strategies
+- first come first serve
+- shortest job first
+    - once process is on CPU it stays until it finishes
+- shortest time completion first
+    - when we have a batch system (users submit jobs to the system, jobs collected in groups or batches processed without user interaction)
+        - most systems are interactive now
+    - when we know the total runtime of a process beforehand
+        - not realistic
+### metric
+- response time
+    - in interactive systems
+    - depends on arrival time and the first time a process is scheduled to run
+    - Tresponse = Tfirstrun - Tarrival
+    - this is basically begin minus end
+### scheduling in interactive systems: round robin
+- each process is assigned a time interval (quantum or time slice) to stay on the CPU
+    - ex. process is on cpu for 10 cycles
+- after this quantam, the CPU is given to another process
+- what is the length of this quantum?
+    - too short -> too many context switches -> lower CPU efficiency
+        - need to take time to switch
+    - too long -> poor response to short interactive
+
+### example
+- processes a b and c arrive at same time 0, each needs to run for 5 seconds
+- is response time or turnaround time better?
+    - the question is not complete, is it an interactive system or batch system?
+    - in an interactive system: you need the user to feel something happening(they provide input to the system), its not important when it finally completes, so response time is better
+
+### scheduling in interactive systems: priority scheduling
+- each process is assigned a priority
+- ready process with the highest priority is allowed to run
+- priorities are assigned statically or dynamically
+    - dynamically: one process has some priority and as long as buffer from ethernet is empty -> then priority drops
+- if you are designer of OS will you allow user to assign priority of processes?
+    - no
+    - assigned by OS depending on how crucial process is
+        - ex. IO handling, ethernet data buffer pipeline because it will kill internet, etc
+- must not allow a process to run forever
+    - can decrease the priority of the currently running process
+    - use time quantam for each process
+
+### desires
+- optimize turnaround time
+- reduce response time for interactive users
+- without knowing the total runtime of a process a priori
+- Multi level feedback queue (MLFQ)
+- side note: can we use deep learning for the scheduler?
+    - in theory yes
+    - but its a heavy piece of software and takes too much time
+
+### MLFQ
+- we have several distinct queues
+- each queue is assigned a different priority level
+- a process that is ready to run is on a single queue
+- a process priority may change overtime
+    - that is, assigned to a different queue
+- rules:
+    - rule 1: if priority (A) > Priority(B), then A runs and B doesnt
+    - rule 2: if priority A = priority B, a case where A and B are in the same queues, A & B run in RR (round robin)
+
+# 2/20/24
+### memory hierarchy
+- as you go up, speed increases and cost increases
+- as you go down, density and capacity increases
+- cache is made of SRAM
+    - static ram, only using transistors
+    - every bit stored on a buffer, and density is much lower
+    - much faster than DRAM
+    - usually managed by the hardware
+- main memory is made of DRAM
+    - charge is on capacitors
+    - managed by the OS
+- disk storage can have lots and lots of storage
+    - managed by OS
+    
+### moores law
+- speed of CPU keeps going up exponentially
+- memory performance does not
+- this is bad because the memory will become a bottleneck for the cpu
+    - increasing cpu performance wont matter
+
+### memory abstraction
+- the hardware and OS memory manager make you see the memory as a single contiguous entity
+- how do they do that -> abstraction
+
+### no memory abstraction
+- several setups
+- user program and the OS in RAM
+- OS in ROM and user program
+- device drivers in ROM and user program/os in DRAM
+- only one process at a time can be running here
+- so if we want to run multiple programs
+    - os saves entire memory on disk
+    - os brings next program
+    - OS runs next program
+    - this is swapping
+- we can use swapping to run multiple programs concurrently
+    - memory divided into blocks
+    - each process assigned to a block
+    - example: IBM 360
+
+### issue arises
+- when we put two blocks of memory on top of each other and our code says to jump to a certain line with no abstraction, since programmers are using absolute address, the addresses change
+- we can use static relocartion at program load time
+    - at load time, go through instructions and change the jumps/addresses to ensure the correct execution
+    - but this is a bad idea because it will be very slow! and will require extra info from the program
+    - so we need memory abstraction
+
+### memory abstraction
+- to allow several programs to co exist in memory we need
+    - protection
+        - make processes unware that there are other processes
+    - relocation
+        - need to make sure jumps are executed correctly
+    - sharing
+        - need to let processes share things without knowing that they're sharing
+    - logical organization
+    - physical organization
+
+### protection
+- processes need to acquire permission to reference memory locations for ready or writing purposes
+- location of a program in main memory is unpredictable
+- memory references generated by a process must be checked at run time
+
+### relocation
+- programmers typically do not know in advance which other programs will be resident in main memory at the time of execution of their program
+- active processes need to be able to be swapped in and out of main memory in order to maximize processor utilization
+- specifiying that a process must be placed in the same memory region when it is swapped back in would be limiting
+    - we may need to relocate the process to a different area of memory
+
+### sharing
+- it is advantagous to allow each process access to the same copy of the program/libary/ rather than have their own separate copy
+- memory management (OS), must allow controlled accesss to shared areas of memory without compromising protection
+    - ex. cannot write to a library only read
+
+### logical organization
+- we see memory as linear one dimensional address space
+- a program = code + data + ... = modules
+- those modules must be organized in that logical address space
+- so this is what we think is happening
+
+### physical organization
+- what is really happening
+- memory is really a hierarchy
+- several levels of caches, main memory, disk
+- managing the different modules of different programs in such a way as:
+    - to give illusion of logical organization
+    - to make the best use of the above hierarchy
+
+### all of this must be done while ensuring
+- transparency: the running programs must not know that all of this is happening
+- efficiency: both in terms of time (speed) and space (not wasting lots of memory)
+- protection: as we saw, protecting processes frome ach other
+
+### address space: base and limit
+- map each process address space onto a different part of physical memory
+- two registers: base and limit (only accessed by OS)
+    - base: start address of a program in physical memory
+    - limit (sometimes called bound): length of the program
+- for every memory access
+    - base is added to the address
+    - result compared to limit
+    - who is doing this? a piece of hardware inside the processor called the memory mangaement unit (MMU)
+- only OS can modify base and limit
+
+main drawbacks:
+- need to add and compare for each memory address
+- what if memory space is not enough to all programs?
+    - then we may need to swap some programs out of the memory
+
+### swapping
+- programs move in and out of memory
+- holes are created in the memory
+    - check that visual
+    - holes cam be combined -> memory compaction
+- processes can take up variable space so its like tetris at that point
+- what if a process needs more memory?
+    - scenario 1: if a hole is adjacent to the process, it is allocated to it
+    - scenario 2: process must be moved to a bigger hole
+    - scenario 3: process suspended till enough memory is there
+
+### managing free memory
+- bitmap:
+    - memory is divided into allocation units of equal size
+    - each unit has a corresponding bit in the bitmap
+    - 0 = unit is free, 1 = unit is occupied
+    - bitmap is slow: to find k-consecutive 0s for a new process
+- linked list: of allocated and free memory segements
+    - segments are of different sizes
+
+### linked list
+- more widely used
+- linked list of allocated and free memory segments
+- usually doubly linked list in case you need to combine process and hole segments
+- ex. a node is either a process with its base and limit or a hole with its base and limit

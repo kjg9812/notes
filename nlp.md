@@ -366,4 +366,145 @@ bean: 0, chicken: 16.2, noodle: 0, stew: 3.1, onion: 2.7
 ### MAP - Mean Average Precision
 - compute the precision at several levels of recall, then average
     - if high ranked items in list tend to be better, the score is higher
-- 
+
+# 2/13/24
+### Question answering task
+- given a query and set of documents
+- find the paragraph (not a document) that is closest to the query
+- this assumes the answer to the question will be in the paragram
+
+### supervised document classification
+- given N sets of seed documents (classified - categories, genres, topics)
+- and a set of unclassified documents
+- goal
+    - automatically assign new documents to "closest" category
+
+### sentiment analysis
+- breaks up documents into positive vs negative vs neutral views
+- professor thinks this is hard to do well
+
+### lexical semantics
+#### lemmas and wordforms
+- lemma: basic word form (paired with POS) used in lexicon
+    - base form representing a set of inflected forms
+    - singular nouns: book -> book, books
+    - base infinitive verbs: be -> be, being, been, am, is...
+    - base adjective: angry -> angry, angrier, angriest
+- word form: word how it actually occurs
+    - a single wordform can be related to multiple lemmas:
+        - bases is the plural of basis and base
+        - leaves is the plural of leaf and leave (as in leaves of absence)
+
+
+# 2/20/24
+### terminology extraction
+- find diverse words, domain specific words from a text
+- given a document about a topic (foreground)
+- and given a set of documents about diverse topics (background)
+- find list of terms/words that are more characteristic of foreground than background
+
+### word/sentence distribution
+- how do we predict sequences of words? how do we distinguish sentences from non sentences?
+- statistically - N-gram probabilities predict the occurrence of words based on the occurrence of N-1 previous words eg. the follows the word in about 28% of the time
+- syntactically - phrases are sequences of words that form equivalence classes based on how all phrases fit together
+    - The giant chicken from brazil and john's homework assignment are both noun phrases
+    - replacing an NP in a well formed sentence with another NP will probably result in a well formed sentence
+
+### statistical language models
+- probability distrbution over sequence of words
+- used to rank word sequences by likelihood
+    - rank multiple output of machine translation, language generation, voice recognition, etc
+    - assume correct answer is highest ranked output
+    - language model produces multiple translations -> are the outputs possible likely english
+- generalized in various ways
+    - like the POS tagger
+    - N-grams of character sequences, phoneme sequences
+
+### training vs dev/test corpus
+- statistics on words are derived from training corpus (like the brown corpus)
+- statistics used to predict occurrrence of words in other corpora
+- we are assuming this training corpus is representative -> which can be flawed
+
+### unigrams
+- every word, instance of punctation, and select other items are tokens
+- A fact abou tht eunicorn is the same as an alternative fact about the unicorn
+    - include the period
+- counts of these words in brown corpus using NLTK
+    - ex. a:23195, fact:447, etc
+- probability of each token chosen randomly
+    - divide word frequency by total words
+    - unigram probability
+    - ex. a: 0.02, fact: 0.0000385
+- if we multiply all these probabilities together we get 0, since there are OOV words
+- unigram probability of sentence = product of probabilities of individual words
+    - but if we have OOV its 0 right, so we need to handle them
+    - one OOV model: assume words occurring once are OOV and recalculate counts
+    - but this value of 1 might skew the probability of an OOV word, so choose another number N
+
+### bigram
+- probability of word given previous word, n and n-1
+    - bigram(the,same) = count(the,same)/count(the)
+    - this is similar to POS tags
+    - probability of "the same" given previous word is "the"
+- additional steps
+    - include probability for beginning and end of sentence -> bigram(the,START) and bigram(END,.)
+- backoff model
+    - if a bigram has a zero count, "backoff" or use the unigram of the word instead
+    - replace bigram(currword,prevword) with unigram(currword)
+    - so if curr word or prev word is OOV, replace with unigram of curr word
+
+### also trigrams, 4 grams, n grams
+- people rarely use anything higher than trigrams
+
+### markov assumptions
+- unigram : probability of words are independent of each other
+- bigram: probability of word depends only on previous word
+- trigram: prob depends on 2 previous words
+- etc.
+
+### phrase structure model of language
+- possible sentences in a language are modeled by a set of context free phrase structure rules
+
+### An example -> english' -> simplified version of english
+- N = {S,VP,NP,POSSP,PP}
+- T = {N,P,D,POSS}
+    - noun, preposition, determiner, possessive mark
+- S = sentence
+    - english' only handles declarative tensed clauses and ignores other kinds of sentences
+- set of words as well
+
+#### grammar
+- ex. S-> NP VP
+- VP -> V
+    - verb phrase can be just a verb
+- VP -> V NP
+    - or it can be verb or noun phrase
+- etc.
+
+#### lexicon
+- D-> the, D-> a, D-> this
+- etc for all other POS...
+
+### random sentence generator
+- algorithm
+    - set output to S
+    - repeat until output contains only words
+        - replace the 1st element Q in output that is not a word
+            - if Q is a nonTerminal
+                - randomly choose a rule Q -> a, where a is a string of terminals and/or non terminals
+            - else
+                - replace it with a word from the lexicon of class Q
+
+### examples
+- Literal privations cautiously reined
+- swellings recorded stills
+    - notes: there's some semantic problems even though there's syntactic correctness
+S expands to NP or VP
+NP expands to plural noun
+plural noun expands to 'males'
+etc.
+
+### implementation of a random sentence generator
+- implement with a stack
+    - keep expanding if not a word, add expansions to the stack, if its a word add to the result
+    

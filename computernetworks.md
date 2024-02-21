@@ -458,4 +458,54 @@ queue delay = w/c - Rttmin
 - MIAD is unstable
     - you don't come back nearly enough, and the next MI takes you farther away from the initial starting point
 
+# 2/21/24
+### routing layer
+    - global delivery of packets
+    - gets packets from one end host of a network to another through a sequence of routers -> a path
+    - find a path: routing
+    - send packets along path: forwarding
+- control plane: determining route/path between A & B
+- data plane actually sends packets along these pre-computed paths when a new packet shows up at a router
+    - at every node, which packet to go to
 
+### how often does control plane kick in and how often data plane kicks in?
+- control plane kicks in when topology changes (considering a graph)
+    - ex. a router dissapears
+    - ex. or when it starts, only need the path to others once
+    - about every 1 ms (milli sec)
+        - due to this, typically on a general purpose CPU with a few cores
+- data plane kicks in when a packet arrives on a link
+    - about every 1 ns (nano sec)
+    - implemented on specialized hardware where people make special circuits to forward
+
+### simplest instantiation -> routing table
+- map from destination address to output port
+- at each router, say which router you need to go to next to get to a destination
+    - ex. to get to C -> go to 3
+    - so basically a table at each router
+- the contÍol plane writes these tables
+- data plane reads ffrom these tables
+- NOTE: we're talking about intradomain routing (one network)
+    - domain, collection of networks, owned by same entity
+
+### question
+- how do you run djikstras in a distributed setting where each network doesn't know what the entire global network looks like?
+    - get info about neighbors
+
+### link state routing protocols
+- the link is the edge in networking terms
+- link state is a property of the edge like propagation delay or queuing delay
+- every node collects link state information from all the links its connected to
+- sends a link state advertisement to all its neighbors
+    - link state advertisement is the information about the neighborhood of each node
+- then run djikstra's
+
+### distance vector protocol
+- state: distance vector
+    - map from destination address to distance
+1. send DV to neighbors
+2. upon receiving DV,
+$\forall v, d_R(v) = min(d_R(v),d_N(v) + link\_metric_{R,N})$
+    - destination is v
+    - where you are is R
+3. if R's DV changes, R tells its neighbors

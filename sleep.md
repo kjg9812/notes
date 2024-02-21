@@ -122,3 +122,7 @@ REM - low voltage, random, fast with sawtooth waves
 3. a third theory suggest sleep depreivation
 4. medication or marijuana?
 
+# 2/20/24
+- WASO -> wakefulness after sleep onset
+    - time person is awake after falling asleep 
+    - increases with age

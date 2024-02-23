@@ -508,3 +508,27 @@ etc.
 - implement with a stack
     - keep expanding if not a word, add expansions to the stack, if its a word add to the result
     
+# 2/22/24
+### manual parsing examples
+- The ice cream truck ended up in New Jersey.
+    - "up" is a particle -> modifies a verb
+    - make a tree of Noun phrase, verb phrases, lowest level close to the word is the actually part of speech
+- Mary said that she knew about linguistics
+    - "that" is SBAR -> additional information about the main clause
+![image](images/tree.png)
+
+### lead to parsing alg - chomsky normal form (CNF)
+- set of rules
+- combines at most two items at a time when parsing
+
+#### ex.
+- replace VP -> V NP PP with 2 rules:
+    - VP -> VG PP
+    - VG -> V NP
+    - so need to break these up
+- come up with NG(noun group) and VG(verb group) to split these
+
+### CKY Parser alg: tokenization
+- tokens and positions between tokens
+- just indexing in coding basically (index from 0 for each word)
+

@@ -509,3 +509,46 @@ $\forall v, d_R(v) = min(d_R(v),d_N(v) + link\_metric_{R,N})$
     - destination is v
     - where you are is R
 3. if R's DV changes, R tells its neighbors
+
+# 2/26/24
+### internet
+- maybe you have google network, comcast network, nyu network
+    - routers sit inside these domains
+- how do you get global connectivity? communication between the domains
+- domains have routers at the edge of the domain, border routers
+    - border routers talk to other border routers for info, serve as representatives for the domains
+
+### inter domain routing
+- from source to destination, what domains do we go through
+    - AS will represent the domain/network
+- say D1 owns a block of IP addresses like 10.2.3.* (prefix)
+    - D1 tells D2: to get to 10.2.3.*, send pkts to D1
+    - D2 tells D3: to get to 10.2.3.*, send pkts to D2,D1 (as a path)
+    - D3 tells D4: to get to _____, send pks through D3,D2,D1
+
+### BGP: Border Gateway Protocol
+- selective import and export of advertisements (local preference)
+- how do border routers talk to other border routers?
+    - eBGP: interdomain routing, establishes what sequence of domains you have to go through
+    - runs over TCP for reliable delivery of packets
+- how do you get information from the border router into the domain itself?
+    - iBGP: propagate information learned from eBGP into a domain, takes sequence of domains and within each demain exports the info
+        - R3 tells R1 R2 R3 R4 that to get to a please send pkts to R3
+            - once in a domain then intradomain routing takes over
+
+### relationships between domains
+- two domains from NYC to Philadelphia
+- peering -> each ISP carries traffic on behalf of the ISP for free
+    - if theres an imbalance maybe its not economically equal for both ISPs
+- customer provider relationship
+    - only carry traffic if one of the sender or destination is a customer
+    - carrying out routing decisions to advance economic incentives
+
+### internet
+- hierarchy of tiers of ISPs
+- want to avoid valleys
+
+### flattening
+- want to bring content closer to users
+- local ISPs have relationship to regional ISPs
+    - but might also have a peer relationship to content provider like google

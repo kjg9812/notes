@@ -532,3 +532,69 @@ etc.
 - tokens and positions between tokens
 - just indexing in coding basically (index from 0 for each word)
 
+# 2/27/24
+### shallow or partial parsing
+- finding constituents in a sentence, but not parsing the whole sentence
+    - shallow parsing identifies "short phrases"
+        - like noun group, verb group chunking
+        - NE tagging
+        - identifying time expressions
+        - other phrases in text
+    - faster and usually more accurate -> decrease error but less detail
+
+### what is a named entity?
+- def 1: a single or multi word expression that meets any of the following criteria
+    - is a proper noun phrase phrase
+            - Kevin Garcia
+            - Professor Garcia
+            - New York University
+    - is a proper adjective phrase eg. latin american
+    - has external distribution of NP, but different internal structure
+        - Five Hundred Thirty
+        - waffles@cs.nyu.edu
+- def 2: a class of words and multi word expressions defined by specifications tuned to information extraction tasks
+    - hierarchy of words
+
+### annotating names in sample docs
+#### examples
+- ex. "albert einstein" is a name
+- but "minowskis special theory of relativity" is not a name you would find in other documents
+    - its special
+- ex. "Mr. Speaker"
+    - usually when you have Mr. its followed by a last name
+    - but even though its not a normal name -> it has has the internal structure of a name
+    - so maybe a name spec is Mr. followed by a title
+- ex. "State of the Union"
+    - its special, need to create specifications
+
+#### in practice
+- types
+    - GPE = location with a government or set of GPEs
+        - geopolitical entity
+    - PER = person or set of people
+    - ORG = organization, club, society, etc.
+        - set of people with governing structure
+        - overlaps a bit with GPE
+    - Other = word sequence widely recognized as name (not the best definition)
+
+### what is a proper noun (Phrase)?
+- def. a name of something that is capitalized even in non initial position, typically representing a unique individual object. proper nouns don't typically take determiners
+- what's unique?
+    - is Adam Meyers a proper NP even though there are more than one person with the name
+    - are colors names? they are unique
+- capitalization solution is inconsistent
+    - it also doesn't work in all languages
+
+### ACE named entities
+- GPE -> location with a government
+    - city, state, country, county
+    - people, phys. location, government
+    - US, NYC, queens, greenwich village
+- location -> geographical location
+    - lake, mountain, natural structure
+    - Hudson River, Mt. Mckinley, the Grand Canyon
+- facility -> man made structure
+    - bridge, street, building
+- person -> person or group of people
+- organization -> group of people with structure
+    - commercial, government, club, non profit

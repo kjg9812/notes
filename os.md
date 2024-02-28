@@ -639,3 +639,100 @@ main drawbacks:
 - linked list of allocated and free memory segments
 - usually doubly linked list in case you need to combine process and hole segments
 - ex. a node is either a process with its base and limit or a hole with its base and limit
+
+# 2/22/24
+### managing free memory
+- again, how are we keeping track of what's used and where there are holes in memory
+- bit map
+- linked list
+- why do we need to compact slots in memory?
+    - if we know theres a hole from 5-10 and 10-15, these sizes are too small for something thats length 10, so combine the holes because they are actually big enough
+
+### how do you allocate memory?
+- different strategies
+    - first fit
+        - scan list until you find first hole that is big enough
+        - the fastest, but not the best probably
+    - best fit
+        - find the best memory usage
+    - next fit
+        - use first fit then keep a pointer pointing to where you stopped
+        - when you get another process continue from that pointer
+    - worst fit
+        - take the biggest hole that is available, use part of it for processs
+        - the rest will still be useful for another process
+        - maybe if you take the best fit will create a hole that is so small that it's useless
+### memory management techniques
+- memory management brings processes into main memory for execution by the processor
+    - involves virtual memory
+    - based on
+        - segmentation (variable size parts) or
+        - paging (fixed size parts)
+- processor is not connected to the disk, only the memory
+    - OS needs to move things from memory and disk
+- processor doesnt know how big physical memory is
+
+### conclusions
+- process is cpu abstraction
+- address space is memory abstraction
+    - OS memory manager and the hardware helps provide this abstraction
+- two main tasks needed form OS regarding memory management
+    - managing free space
+    - making best use of the memory hierarchy
+
+### what is the issue with memory
+- theres not enough
+- having enough memory is not possible
+    - how do you determine enough?
+    - programs keep growing in size as years go by
+- processor does not execute anything that is not in the memory
+
+### hints
+- why the text segment of any process starts at the same address?
+    - same address on all processes? hmmmm
+- why dont you run out of memory even if the sum of every memory requirement of all your programs is more than what you have
+- the address is 64 bit in 64 bit machines
+    - so memory addresses will be from 0 to 2^64 - 1 which is way more than the amount of memory you have on your machine
+
+### hint intuitions
+- all memory references are logical (virtual) addresses that are dynamically translated into physical addresses at run time
+    - so all addresses are not the real addresses -> they need to be translated
+    - so the cpu knows nothing about the actual setup of memory
+- a process may be broken up into several pieces that don't need to be contiguosuly located in main memory during execution
+    - so addresses can be anywhere in actual physical memory
+    - this way we can use memory effectively
+- so its not necessary that all pieces of a process be in main memory during execution
+    - maybe a bunch of stuff is in the disk until its needed
+
+### definition of virtual memory
+- mapping from logical (virtual) address space to physical address space
+
+### implementation of virtual memory
+- paging!
+    - when we have whole memory we divide it into pieces of equal size
+    - i have 16 gb of ram and virtual memory 2^64
+        - take 16 gb of ram and divide it into 4k
+            - each 4k is a page
+    - which will have more pages?
+        - virtual memory
+    
+### the story/flow
+1. OS brings into main memeory a few pieces of the process
+    - what is meant by pieces?
+2. an interrupt is generated when an address is needed that is not in main memory
+    - how do you know it isnt in main memory?
+3. OS places the process in a blocking state
+4. OS issues a disk I/O read request
+    - why?
+    - please put this stuff into memory
+5. another process is dispatched to run while the disk IO takes place
+6. an interrupt is issued when disk IO is complete, which causes the OS to place the affected process in the ready state
+    - interrupt is a signal sent to CPU from hardware
+7. piece of process that contains the requested logical address is brought into main memory
+    - what if memory is full?
+
+### virtual memory
+- each program has its own address space
+- this address is divided into pages
+    - so a page is a block of used memory that the program used
+- pages are mapped into physical memory

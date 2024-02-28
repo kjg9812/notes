@@ -126,3 +126,31 @@ REM - low voltage, random, fast with sawtooth waves
 - WASO -> wakefulness after sleep onset
     - time person is awake after falling asleep 
     - increases with age
+
+# 2/27/24
+### neurochemistry and signal transmission
+- stimuli might lead to action potential, change in charge in neurons, release neurotransmitters to post snyaptic neurons, and either keep transmitting or block it
+
+### hormone vs neurotransmitter
+- NTs
+    - released by neurons
+    - act quickly and locally
+    - GABA
+- hormones
+    - released by glgands
+    - distributed widely into the bloodstream
+    - act slowly and at a distance from their point of release
+    - pineal gland releases melatonin
+
+### messengers
+- wake promoting
+    - acetylcholine, dopamine, histamine, norepinephrine, orexin, sserotonin
+- sleep promoting
+    - gaba, adenosine, melanin concentrating hormone (but its a neurotransmitter), and melatonin
+
+### acetylcholine
+- wake promoting but also REM promoting
+- modulator of plasticity, memory, arousal, andd reward
+- nuclei in brainstem/ARAS
+- alzheimers is the loss of acetylcholine neurons
+

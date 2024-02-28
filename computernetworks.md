@@ -552,3 +552,46 @@ $\forall v, d_R(v) = min(d_R(v),d_N(v) + link\_metric_{R,N})$
 - want to bring content closer to users
 - local ISPs have relationship to regional ISPs
     - but might also have a peer relationship to content provider like google
+
+# 2/28/24
+- hosts and routers: goal is to get from host A to host B
+    - as we've seen before we use routing tables
+
+### exact matching
+- you have a destination address and look at each entry in the lookup table for the same dst address
+- what is better?
+    - hashmap
+    - but there are so many addresses say for example 32 bit addresses then there could be 2^32 entries
+
+### longest matching
+- Destination address -> lookup module -> lookup table
+    - but in the lookup table, group of addresses can represent single entries
+    - represent IP addresses as a group of bits + a "*"
+        - star meaning it can differ
+        - so 001001 and 001000 would be 00100*
+        - 00100 is the prefix, "*" is unspecified
+    - so columns of lookup table are prefix and NH
+- 1****** represents 32 addresses with one entry
+- what if you have multiple matches?
+    - find the most specific, the longest prefix (hence longest prefix matching)
+    - take the one with less wildcards(*) in the match
+    - in practice , *s are only at the end of the address
+
+### implementation
+- in software:
+    - write code, give to compiler, produce executable, run executable
+- in hardware:
+    - take functionality, devise digital circuit, realize this circuit through boolean gates
+
+### LPM Module
+- trie
+    - go down this tree like data structure to find the IP address
+        - when you stop, that is the longest prefix match
+
+#### exact match module
+- in software, hash table
+
+### Hardware Implementation of Forwarding
+#### exact match in hardware
+- take destination address -> put into hash function which gives an index in a table
+    - to deal with collisions, can either have a linked list or do linear probing (put in next available slot)

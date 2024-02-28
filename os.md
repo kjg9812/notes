@@ -711,8 +711,8 @@ main drawbacks:
 - paging!
     - when we have whole memory we divide it into pieces of equal size
     - i have 16 gb of ram and virtual memory 2^64
-        - take 16 gb of ram and divide it into 4k
-            - each 4k is a page
+        - take 16 gb of ram and divide it into 4000
+            - each 4000 bytes is a page
     - which will have more pages?
         - virtual memory
     
@@ -736,3 +736,71 @@ main drawbacks:
 - this address is divided into pages
     - so a page is a block of used memory that the program used
 - pages are mapped into physical memory
+
+# 2/27/24
+- every process thinks it has 2^64 addresses in memory
+- use part of the disk as an extension to the memory
+- CPU has no bus to connect to the disk, only to memory
+### the flow
+- CPU gives a virtual address to the MMU(memory management unit) which translates it to the physical address in main memory
+- thought exercise?
+    - assume that page size is 4k bytes -> 4k on each page until you get to 16gb of memory
+    - in virtual memory same thing -> 4k on each page until you reach the end
+        - this will have more pages since the end is 2^64
+### virtual memory
+- advantages:
+    - illusion of having more physical memory
+    - program relocation
+        - page may be kicked out to the disk and brough back when its needed, since physical memory can get full
+        - it will make the best use of the physical memory
+    - protection
+        - protect processes from each other
+
+### addresses/offset
+- since virtual is much bigger, the number of bits you need in physical is much less than virtual for the page
+- the address will be the page number and the page offset for the specific line in the page
+- need 10 bits(2^10) to specify the offset if the page is 1k
+
+### page table
+- CPU, memory, disk are hardware
+- MMU is hardware in the CPU
+- page table is a data structure used by the operating system
+    - created per process
+    - so 10 processes means 10 page tables
+- virtual page number is an index in a table that contains the physical page number
+    - also has a valid bit to say that the page is in memory (1 it exists 0 else)
+- the offset will be the same in virtual memory page and the physical memory page (its an offset within a page) -> basically our groups are just in different spots between virtual and physical (groups being pages)
+- how does the OS tell the hardware where to find the page table
+    - there is a page table base register (PTBR)
+    - MMU just caares about which page table to use for the translation
+
+### page table base register
+- the OS maintains information about each process in a process control block
+- the page table base address for the process is stored there
+- the OS loads this address into the PTBR whenever a process is scheduler for execution
+- when the scheduler decides a process is running
+    - one step is to put the address of the page table into the PTBR
+- only the kernel (the OS) can access PTBR
+
+### address translation: page hit
+- CPU sends virtual address to MMU
+- where is the page table? in memory
+- where is the process table stored? in memory
+1. processor sends virtual address to MMU
+2-3. MMU fetches page table entry from page table in memory
+    - get page table entry addreess, then add the offset
+4. MMU sends physical address to cache/memory
+5. cache/memory sends data word to processor
+
+### address translation: page fault
+1. processor sends virtual address to MMU
+2-3. MMU fetches page table entry from page table in memory
+4. valid bit is zero, so MMU triggers a page fault exception in kernel
+    - process will be stopped and blocked in kernel mode
+    - so MMU goes to page fault handler after the exception
+    - if VA (virtual address) is invalid, kill process
+    - if VA has been paged out to disk, then swaps in faulted page, update page table, resume faulted process
+        - also requires an eviction algorithm if the memory is full
+- what does page fault handler do?
+    - OS looks at the address
+

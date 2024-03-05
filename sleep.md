@@ -154,3 +154,12 @@ REM - low voltage, random, fast with sawtooth waves
 - nuclei in brainstem/ARAS
 - alzheimers is the loss of acetylcholine neurons
 
+# 2/29/24
+### melanin concentrating hormone
+- also REM producing
+
+### melatonin
+- hormone modules sleep/wake patterns
+- sleep promoting
+
+### sleep debt

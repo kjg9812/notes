@@ -595,3 +595,100 @@ $\forall v, d_R(v) = min(d_R(v),d_N(v) + link\_metric_{R,N})$
 #### exact match in hardware
 - take destination address -> put into hash function which gives an index in a table
     - to deal with collisions, can either have a linked list or do linear probing (put in next available slot)
+- 2 choice hashing
+    - hash1 and hash2 and choose the better one?
+    - choose the one with the lesser occupancy of the linked list
+- 2 left hashing
+    - hash1 and hash2
+    - partition the table two ways
+    - hash1 picks at random an index from the top half of the table
+    - hash2 from bottom half
+
+### Hardware for 2PM
+- TCAM
+- similar to hash table where we have bit by bit comparisons
+- but instead of bits, there is a ternary digit that allows you to store 1 or 0 or a *
+
+### 
+
+# 3/4/23
+## midterm review
+#### What were the goals of the Internet when it was first developed? How was this a departure from the goals of the telephone network?
+- low effort interconnection and generality
+- phone networks was built for the purpose of just voice calls
+- from these goals arise differences in techniques like packet switching vs circuit switching
+- also non-goals
+    - performance
+    - security
+    - cost
+
+####  If your applications send a lot of traffic 50 % of the time and stay dormant 50 % of the time, does it make more sense to use packet switching or circuit switching? Why?
+- if only using it 50% you might as well let someone else use it for the other 50, so packet switching 
+- A can be active ana B can be active but rarely the case that both are active at the same time
+    - this is the risk that the internet takes
+- what would happen if you used a circuit switched network
+    - constant connection
+    - reserve a circuit for the purpose of some person's communication, if they're not communicating the line remains idle, so it's underutilized
+
+#### What if each application sent a steady low-rate stream of (say) 60 kbit/s, such as audio? Would it make more sense to use packet or circuit switching now?
+- circuit swtiching
+- performance is predictable from the applications perspective because that circuit is dedicated to that application alone
+- consistency is the main thing here; you don't want queues from other applications
+
+#### Say you were loading a web page (www.google.com/index.html) from your laptop. Describe exactly how this page load happens starting from the application layer all the way down to the physical layer.
+- application layer: send DNS request for google.com, it comes back with an IP address, then uses sockets API to request a document or page from that IP address
+- transport layer: Connection establishment (using accept/listen) and reliable and in order delivery of HTML/css/js pages
+- routing layer: handles what happens from access point to google's server, BGP is the protocol for interdomain routing, intradomain routing within the concept of a single network the routing protocol is either link state or distance vector routing (edge of one network to edge of another network)
+- link layer: handles packets from laptop to access point once you know the first router to get to
+- physical layer: cable or antenna to translate bits into voltages
+
+#### If the minimum round-trip time on a path is RT Tmin, what is the throughput of the Stop-And-Wait protocol? What is the throughput of the sliding window protocol?
+- 1/RTT stop and wait
+- w/RTT sliding window
+- explain as well
+
+#### At some point, a receiver in the Stop-And-Wait protocol has received the following sequence of packet sequence numbers: 1, 2, 3, 4, 7, 8, 10, 12, 13, 14. Is this a valid sequence? Why or why not? Is it a valid sequence in the sliding window protocol?
+- stop and wait no, it needs an ack
+- sliding window you can have arbitrary gaps
+
+#### What happens if everyone uses a large window in the sliding window protocol? What happens if everyone uses a small window?
+- large window -> leads to congestion collapse
+    - everyone times out and retransmits packets
+    - if you keep retramsmitting packets a link could be full of duplicate packets
+- small window -> underutilization of the network
+    - lots of capacity and you can use it but you're not trying hard enough
+
+#### Give a few examples of congestion collapse. Explain precisely how the offered load is measured in your example, how a user’s individual utility is measured, and how the aggregate utility is measured? Draw a curve showing this congestion collapse graphically for your chosen example (don’t draw a generic congestion collapse figure).
+- 3 examples in lectures
+- specify the x axis (offered load, or number of senders, etc) and the y axis (utility could be throughput, throughput/delay, etc)
+
+#### Show the workings of the distance vector protocol on this particular example. Assume it takes one time unit to send a DV advertisement on any link. How long does it take for node A to learn about a route to node B?
+- there's an equation, look at answer key
+
+#### Let’s assume you are on a link with a capacity of 10 Mbit/s and a minimum round-trip time (i.e., excluding queueing delays) to the server of 10 ms. Let’s say you want to retrieve a file from the server as quickly as possible. Consider two cases: a small file that can fit into a single maximum-sized packet and a large file that needs several thousand such packets. You have two choices to improve network performance: you can buy a better link with higher capacity or you can move the server closer to you. Which choice makes sense if you want to minimize the total time that it takes for you to retrieve the file from the moment you issue the file retrieve command? Answer this separately for the small and large file case.
+- assume latency is transmission delay, propagation delay, queuing delay
+- for smaller file: bring the server closer to you
+    - for a smaller file, the transmission delay is very small
+- for larger file: increase capacity for the link
+    - transmission delay if very big
+
+#### In an interdomain routing protocol such as BGP, what is the consequence of not authenticating a route advertisement? Demonstrate one example in detail where you think a router lying in its advertisements could severely disrupt Internet service.
+- authenticating: a person could be something like SSO, a route advertisement -> if someone says they can send data to a particular destination they are telling the truth
+- youtube example: route advertisements were not authenticated
+- soon everybody was sending data and the path didn't exist, so all the data got dropped
+
+#### Between AIMD, MIMD, AIAD, and MIAD, which of these protocols are suitable to guarantee both efficiency and fairness starting from an arbitrary value of the window size for two senders. Demonstrate this graphically using the phase diagram we used in the lecture.
+- AIMD
+- additive increase gently
+- multiplicative decrease gets you back to non loss more quickly
+
+#### Why is DNS structured as a hierarchical collection of servers?
+- allows DNS to scale to a large number of domain names
+- ex. TLD server for .com TLD is only responsible for domain names that end with .com
+- there is a division of responsibility where each entity is only responsible for a portion of domain names
+
+#### Give a few examples of where using hierarchy allows the Internet to scale better.
+- domain name system, public vs. private IP addresses, intra vs intra domain routing
+
+#### How does the gain parameter α affect the retransmission timeout calculation?
+- A large alpha makes the timeout calculation converge faster to a new set of RTT values, while a small alpha is more sluggish.

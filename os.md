@@ -804,3 +804,81 @@ main drawbacks:
 - what does page fault handler do?
     - OS looks at the address
 
+# 3/4/24
+### two challenges to virtual memory
+- speed: VA to PA translation means we need to access the memory twice for each CPU memory request
+    - generate virtual address, go to MMU, use address in PTBR, then go to memory to access page table, then get translation to physical address, then go to physical memory
+    - this affects performance a lot
+- size: page table can be huge, and we have a page table per process
+    - page table per process running
+
+### speeding up virtual memory: translation lookaside buffer (TLB)
+- solution comes from hardware, another piece next to the MMU
+- observation: most programs tend to make a large number of references to a small number of pages -> only fraction of the page table is heavily used
+    - so there are definitely more frequently used pages
+- solution: TLB
+    - small hardware cache inside the MMU
+    - maps virtual page numbers to physical page numbers adress without going to the page table
+    - contains complete page table entries for small number of pages, the last x (usually 256)
+        - previous x pages that you have accessed
+
+### TLB hit
+- TLB hit eliminates a memory access, saves time
+- VA: virtual address
+- PA: physical address
+- PTE: page table entry
+- the MMU goes to TLB first and does not need to look in the page table
+
+### TLB miss
+- incurs an additional memory access (the PTE)
+- TLB does not have PA, so it works as usual and goes to the page table to find the translation to physical memory
+- but TLB misses are rare
+- in case of TLB miss (did not find the address translation you want) -> MMU addresses page table
+- remember: if page fault, page is in the disk so that it can move from disk to memory
+- note: TLB misses occur more frequently than page faults
+
+### tlb diagram
+- we filled TLB from the page table
+- is there a scenario where you can find entry in TLB but no actual entry in the page table?
+    - yes, tlb miss so i put page in TLB from page table, but maybe this page is removed to the disk
+    - so you also need to update the TLB when you remove the page from the memory
+- suppose we have one core, one process is running, two processes are in ready state
+    - how many page tables do we have? 3 but the CPU is only using 1
+    - how many MMUs? 1
+- ex. one core, one process running, one is ready and one is blocked
+    - how many page tables? still 3, pages tables still exist as long as the processes exist
+    - how many MMUs? 1
+- only situation where this is not the case is if there is a zombie, a process that is terminated but not removed
+- how many MMUs on two cores? 2 because it is hardware
+
+### TLB in case of context switch
+- TLB contains translations from the page table of a process
+- if a new process is scheduled for execution, the page table of that new process is used
+- solution 1: TLB must be flushed and start anew
+- solution 2: TLB augmented with process ID
+    - but makes it more complicated cause now need to compare process ID and virtual page entry
+
+### thinking about cache (not on exam)
+- page is much larger than a cache
+- if we have a cache miss go to memory, but to go to memory we need to go to physical memory
+- if we get a cache hit, disregard physical address
+- so work in parallel, go get the physical memory address from virtual address anyways so you have it
+- but theres security and more expensive, so don't access cache with virtual memory at all
+- when virtual address comes in it will have the physical address, once you get this access the cache, then see if theres a cache hit or miss, go to memory if miss
+
+### tackling the page table size problem
+- assume: 4KB-page, 48 bit address space, and 8 byte PTE (page table entry)
+- size of page table needed?
+    - (total memory size/page size) * PTE
+    - $2^{48-12} * 2^3 = 512 GB$
+- wasteful: most PTEs are invalid not used
+- solution: multi level page table
+    - example: 2 level page table
+        - level 1 table: each PTE points to a page table
+        - level 2 table: each PTE points to a page
+### multi level page table
+- to reduce storage overhead in case of large of large memories
+- how is this saving space?
+- virtual address has virtual page number and offset, if we have two levels divide virtual address into 3 pieces
+    - PT1(page table 1), PT2 (page table 2), and offset
+- 

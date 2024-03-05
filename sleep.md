@@ -163,3 +163,60 @@ REM - low voltage, random, fast with sawtooth waves
 - sleep promoting
 
 ### sleep debt
+- you can't sleep it all back
+
+# 3/5/24
+### multiple sleep latency test (MSLT)
+- measures sleep latency in two hour intervvals
+    - generally at 10 am & 12,2, 4, and 6 pm
+    - you try to fall asleep at these times for 20 minutes
+- alterness is determined based upon how long it takes you to fall asleep
+    - 0-5 minutes is severe
+    - 15-20 minutes is excellent
+- so basically if you fall asleep easily throughout the day you're underslept
+
+### yawn
+- why?
+    - herd animals
+    - draw in more oxygen
+    - brain temperature ccontrol, cool your head
+- we start yawning very early, babies in the uterus
+
+### the brain keeps track of sleep debt
+- keeps accurate accoutning of how much sleep is owed back
+- brain can probably hold sleep debt for 3 weeks
+- it is not "normal" to feel drowsy during the daytime
+    - so you're probably in sleep debt
+
+### myths
+- all food does not make you sleepy
+    - except a lot of fat and high carbs
+- a boring meeting does not make you sleepy
+- a warm room does not make you sleepy
+
+### sleepy food
+- high sugar
+    - large insulin releases cause more tryptophan to be absorbed by the brain
+- high carb
+- high fat
+
+### how much sleep do we really need?
+- varies across ages
+### biphasic sleep
+- hypothesized humans had a biphasic sleep pattern
+- two 4 hours segments
+    - first sleep/deep sleep
+    - an hour of gentle activity
+    - second sleep/ morning sleep
+- electricity probably forced us out of this
+
+### segmented sleep
+- common in other cultures
+- some people believe forcing sleep into 8 hour night may be the cause of many problems
+
+### what kind of sleep do you need for sleep debt?
+- you mostly need deep sleep
+- but there's REM rebound, so you go into REM a lot sooner if you're in sleep debt
+
+### we're sleeping less
+- than 50 years ago, 1.5-2 hours less

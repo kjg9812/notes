@@ -598,3 +598,6 @@ etc.
 - person -> person or group of people
 - organization -> group of people with structure
     - commercial, government, club, non profit
+
+# 3/5/24
+## midterm review

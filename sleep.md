@@ -220,3 +220,10 @@ REM - low voltage, random, fast with sawtooth waves
 
 ### we're sleeping less
 - than 50 years ago, 1.5-2 hours less
+
+### neurocognitive effects of sleep diruption
+- 1 hour less sleep on one night causes changes to EEG responses
+- memory performance messed up
+- apnea, restless leg syndrome, acaedemic deficits, learning problems, symptoms of ADHD
+- computational speed, impair verbal fluency, decrease creativity and abstract problem solving ability
+

@@ -881,4 +881,205 @@ main drawbacks:
 - how is this saving space?
 - virtual address has virtual page number and offset, if we have two levels divide virtual address into 3 pieces
     - PT1(page table 1), PT2 (page table 2), and offset
-- 
+
+# 3/8/24
+### why two level page table?
+- double accesses now, but TLD reduces this use of page table
+- if a PTE in the level 1 is null, then the corresponding level 2 page table does not even exist
+- why can entries be null? any program does not use most of its virtual address space
+- only the level 1 table needs to be in memory at all times, level 2s can be in the disk
+- level 2 page tables can be created and paged in and out by the VM system as they are needd
+    - when would we need to create a level 2 page table?
+        - when the program needs more space -> stack is growing or your heap is growing
+- note: second level page table does not contain physical address, but the physical page number (add the offset for the address)
+
+### another solution: inverted page table
+- page table has one entry per page frame not one entry per page
+    - for each page slot (frame) it shows which virtual page it has
+- each index is a physical page number
+- virtual page number, you search for the entries that contain this virtual page number, then the index is the physical page number
+- plus: save vast amount of storage
+- cons: virtual to physical translation much harder
+
+### page faults
+- definition: when the page table is consulted, and we found that the requested page is not in the memory but in the disk
+- in reality, the OS does not wait til the memory is full to start making page replacement because the OS wants some spare memory just in case
+
+### replacement policies
+- decides what to kick out if its full
+- things to consider
+    - measure of success
+    - cost
+        - storage efficiency
+        - time efficiency
+
+### optimal page repalcement algorithm
+- each page labeled with the number of instructions that will be executed before this page is referneced
+- page with the highest label will be removed
+- the page that will be accessed farthest in the future will be removed
+- impossible to implement because we do not know the future
+
+### not recently used (NRU) replacement algorithm
+- two status bits with each page
+    - R: set whenever the page is referenced (used)
+    - M: set when the page is written
+- R and M bits are available in most computers implementing virtual memory
+- those bits are updated with each memory reference
+    - must be updated by hardware
+    - reset only by the OS
+- periodically the R bit is cleared
+    - to distinguish pages that have been referenced resently
+
+### FIFO
+- OS maintains a list of the pages currently in memory
+- most recent arrival at the tail
+- on a page fault, the page at the head is removed
+- so the page that entered first is removed
+
+### the second change page replacement alg
+- modification to FIFO
+- inspect the R bit of the oldest page
+    - if R = 0 page is old and unused -> replace
+    - if R = 1 then
+        - bit is cleared
+        - page is put at the end of the list
+        - the search continues
+- if all pages have R = 1, the alg degenerates to FIFO
+- so its like, get the oldest but if its been used then dont pull that one
+
+### LRU - least recently used
+- good approximation to optimal, so closest to optimal
+- when page fault occurs, replace the page that has been unused for the longest time
+- realizable but not cheap
+
+### LRU hardware implementation
+- 64 bit counter incremented after each instruction
+- each page table entry has a field large enough to include the value of the counter
+- after each memory reference to a page, the counter is incremented in the entrys counter field
+- at page fault, teh page with lowest value is discarded
+- this is too expensive and too slow!
+    - scan through to find lowest counter
+
+### LRU hardware implementation 2
+- machine with n page frames (real page in physical memory)
+    - so if a page is 4k bytes and physical memory is 16 gb ram, then number of page frames is 16/4k
+- hardware maintains a matrix of n x n bits
+- matrix is initialized to all 0s
+- whenever page frame k is referneced
+    - set all bits of row k to 1
+    - set all bits of column k to 0
+- the row with the lowest value is the LRU
+    - because when other pages are used then the columns for other pages are initialized to 0, which contributes to a lower score
+    - note, the bits are counted in binary, so 0011 is 3 and etc.
+- when a new page comes to memory, do we have to reset?
+    - no
+- do these pages have to belong to the same process?
+    - no they don't, this is looking at physical memory
+    - if one process is running it may cause the page of another process to be kicked out
+- suppose we have this matrix then turn off the machine and re-boot again
+    - if we turn off laptop and open it after a while, can something happen that makes the matrix 10x10 or 7x7; change the matrix dimensionality?
+        - matrix is nxn, say you upgraded the RAM, then the matrix will be bigger
+
+# 3/10/24
+### how to study for miterm
+- read the slides carefully
+- listen to lecture
+- check questions and answers on dicussion forums
+
+### LRU implementation
+- slow
+- few machines have the required hardware
+
+### simulating LRU in software -> NFU
+- not frequently used (NFU) algorithm
+- counters, lowest count is least frequently used
+- software counter associated with each page, initially zero
+- at each clock interrupt, the OS scans all pages and add the R bit of each page to the counter of that page
+    - so if R is 1 then the page has been accessed
+    - clear the R bit afterwards
+    - what is clock interrupt?
+        - an interrupt is something that is external to program, requires OS attention; like a keyboard press
+        - the clock is a small circuitry that generates an electrical signal that generates a square wave, down up down up, the frequency means in 1 second how many times it goes up and down; down and up is 1 cycle; 4 ghz machines means in 1 second 4 billion cycles; the CPU works only when the clock is up
+
+- at page fault: the page with lowest counter is replaced
+
+### enhancing NFU
+- we don't decrement counter, so what if page is accessed a lot in beginning but not later
+- NFU never forgets anything -> called high intertia
+- modification:
+    - shift counter right 1 bit before adding R
+        - dividing by 2
+        - ex. 10 -> 01
+    - R bit is added to the leftmost
+    - an example 10000000 -> 010000000 -> add leftmost 110000000
+    - so old bits will eventually fall off
+- this modified algorithm is called aging
+- the page whose counter is lowest is replaced at page fault
+
+### the working set model
+- working set: the set of pages that a process is currently using
+- thrashing: a program causing page faults every few instructions
+    - every few instructions, there is a severe memory shortage for your process
+- question: can a process in blocked state have a page in physical memory?
+    - yes, why not -> only if it needs to be kicked out
+- important question
+    - in multiprogramming systems, processes are sometimes swapped to disk (ie all their pages are removed from memory) when they are brought back, which pages to bring?
+- model: try to keep track of each processes' working set and make sure it is in memory before letting the process run
+- w(k,t): the set of pages accessed in the last k references at instant t
+    - which just goes up over time, but stabilizes on a graph
+- so the OS must keep track of which pages are in the working set
+- new replacement alg: evict pages not in the working set
+- possible implementation (but expensive)
+    - working set = set of pages accessed in last k memory references
+- approximations
+    - working set = pages used in the last 100 msec
+
+### some design issues for paging
+### local vs global allocation: how much physical memory should each process be alloweed?
+- how memory should be allocated among the competing runnable processes
+    - if the OS gives equal physical memory allocation, is it good?
+        - no this is a bad idea, some processes might require a lot of memory or less memory than the others
+- this is called local algorithms: allocating every process a fixed fraction of the memory
+- global algorithms: dynamically allocate page frames
+- global works better
+    - local alg used and working set grows means thrashing will result
+    - if working set shrinks then local algs waste memory
+
+### global allocatio: how does it work?
+- method 1: periodically determine the number of running processes and allocate each process an equal share
+- method 2(better): pages allocated in proportion to each process total size (in terms o fnumber of pages)
+- page fault frequency (PFF) alg: tells you when to increase/decrease page allocation for a process but says nothing about which page to replace
+
+### more how it works
+- every few seconds it calculates the number of page faults per second
+    - there is an unacceptable number and a low number
+    - if high, then the process is given more pages
+    - if low, the process has too much memory so page frames may be taken away
+- so the OS is keeping track of this for every process
+
+### more design issues: load control
+- what if PFF indicates that some processes need more memory but none need less?
+    - swap some processes to disk and free up all the pages they are holding
+    - which processes to swap?
+        - strive to make cpu BUSY (IO bound vs CPU bound processes)
+            - IO bound will leave
+        - process size, pick the one that is huge in size in terms of pages
+
+### more design issues: page size
+- large page size -> internal fragmentation
+- small page size ->
+    - larger page table
+    - more overhead transferring from disk
+    - the virtual page number is getting bigger and the entries increase
+    - a big array will span several pages
+
+### more design issues: shared libraries
+- dynamically linked
+- loaded when program is loaded or when functions in them are called for the first time
+
+### cleaning policy
+- paging daemon
+- a daemon is a process started by the OS and is in the background
+- this process sleeps most of the time
+- awakened periodically to inspect state of the memory
+- if too few page slots are free -> daemon begins selecting pages to evict

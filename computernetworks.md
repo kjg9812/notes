@@ -692,3 +692,53 @@ $\forall v, d_R(v) = min(d_R(v),d_N(v) + link\_metric_{R,N})$
 
 #### How does the gain parameter α affect the retransmission timeout calculation?
 - A large alpha makes the timeout calculation converge faster to a new set of RTT values, while a small alpha is more sluggish.
+
+# 3/11/24
+### Source of Queues
+- if input is greater than what we can send out per unit time, then some packets will have to wait
+    - input exceeds output over short periods of time
+- in our case, what happens when multiple inputs want to send to same output port
+
+### memory for queues
+- where do the packets go when the queues build up?
+- FIFO
+    - a usual queue
+- priorities
+    - like packet size
+    - packet sent time
+- fair queuing
+    - round robin and multiple queues
+
+### hardware for FIFO
+- question: how many simultaneous enqueues and dequeues do you see?
+- assume a packet comes every tick on every input port and a packet departs on every tick from every output port
+    - 3 and 3
+
+### shared memory
+- common pool of memory for all input and output ports
+- benefit: better utilization
+
+### output queues: not shared memory
+- each output port has fixed memory
+- how many E & D per tick? assuming n = 3
+- 3 E and 1D
+- N E & 1D
+- advantage: less operations per tick
+    - NE & ND
+- disadvantages: doesnt fully utilize memory
+    - what if one output port is more used than others, the memory is not utilized, so that one output port should need more memory
+
+### input queues
+- move queues from output side to input side
+- pros: 1 E & 1 D
+- cons: head of line blocking -> input queues want to go to same output port so the output port will have to pick which one it uses, not fully utilizing memory
+
+### bipartite matching
+- at most one port to an input
+
+### Virtual output queues
+- for each input queue, organize a set of FIFO data structures, one per output queue
+- so when you match, you can look at any of the locations to pick better matches
+- input port sends a request to every output port for all of the packets in its queues
+- output port gets a bunch of requests from every input port, and picks one at random
+    - sends a "grant"

@@ -742,3 +742,59 @@ $\forall v, d_R(v) = min(d_R(v),d_N(v) + link\_metric_{R,N})$
 - input port sends a request to every output port for all of the packets in its queues
 - output port gets a bunch of requests from every input port, and picks one at random
     - sends a "grant"
+
+# 3/13/24
+### from last time
+- head of line blocking -> too many packets arrive to an input where the head is blocked because the output chose another queue, then the queue gets very large
+
+### the fix
+- each input port has n queues (n being number of inputs)
+    - each queue only contains packets destined to a certain output
+
+### PIM: Parallel iterative match
+- each input port sent a request to all the output ports for which is has packets
+- output picks one of the requests at random and decides to "grant" it
+- grants go out at the same time, so it could happen that there could be multiple grants to multiple inputs
+- so the input has to "accept" as well, and pick the output port
+
+### MAC Layer
+- link layer
+- the local part of the network
+- two kinds that we talk about:
+    - shared medium
+        - the medium of communication (electromagnetic waves, sound waves, etc) is shared in that everybody can use it over a shared space; ex. like radio signals
+        - everybody needs to coordinate with each other so they don't interfere at the lowest level and waves dont cancel each other out etc.
+        - bus based ethernet -> giant cable and machines can tap into this cable to send data to each other -> this is shared because data is not isolated, data is in the same cable
+    - unshared medium
+        - a cable is unshared, if you connect to a cable all of your signals are isolated
+        - but some can be shared look above
+
+### frequency range for different comm. technologies
+- TDMA: time division multiple access
+    - time slice given to a user for a use of comm technology
+- FDMA: freq dividion multiple access
+    - frequency divided among users for access
+- centralized authority: the base station
+- multiple entities are contending to use the protocol at the same time, so how do we make them take turns? without using a centralized authority
+    - ex. verizon centralized authority; only paid subscribers can access this
+    - but with wifi anyone can join
+
+### ALOHA: simplest contention based protocol
+- you have a central data server and a bunch of islands in Hawaii
+- islands are far away so they dont know if other islands are attempting to transmit
+- if island sends packet and you dont get ack back you assume your packet collided with someone else (transmit at same time)
+- each ilsand transmits with probability $p$
+- N sends each tx with prob p, what is the probability of a successful transmission?
+    - $P_{Success} = N * p * (1-p)^{n-1}$
+    - the probability of one transmission is the probability of tx and the probability of all others NOT transmitting
+- what is the p that maximizes P_Success?
+    - take the derivative and set it to 0 (maximize a function)
+    - $p = \frac{1}{n}$
+- the graph looks like congestion collapse
+    - if probability is low there might not be many collisions, but the medium may not get used
+    - if probability is high there might be lots of collisions
+    - so graph goes up then down
+- note:
+    - you don't know N so you cant calculate 1/N for optimimal p
+    - so needs to be adaptive like AIMD
+    

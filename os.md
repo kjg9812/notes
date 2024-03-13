@@ -1083,3 +1083,56 @@ main drawbacks:
 - this process sleeps most of the time
 - awakened periodically to inspect state of the memory
 - if too few page slots are free -> daemon begins selecting pages to evict
+
+# 3/12/24
+## Midterm Review
+- note, no questions about threads, no deadlocks
+- write an assumption of the question is unclear
+    - "i understood the question as..."
+- 32 bit machine
+    - 2^32 virtual
+    - maximum physical memory is 2^32 -> can put less however
+
+### process 3 state model
+- why i got it wrong -> pay attention to "neglect time taken by scheduler in that question", if you consider this time then all processes could be waiting in ready
+- all in blocked? can happen
+- all in ready? no, since scheduler will always schedule 1 ready
+- two in ready and two in blocked? no, same reason as above
+- one in running and three in blocked? can happen
+
+- why don't we have arrows from:
+    - blocked to running: because the scheduler will not pick a blocked process to run; in order for process to be in running, the OS scheduler will only pick from the pool of ready processes
+    - ready to blocked: how can the process become blocked if its not even running/executing something that requires IO
+
+### shortest time to completion
+- why i got it wrong -> pay attention to "assume no other processes with enter the system"
+    - then A will be the shortest, BCD can not arrive with a shorter time
+
+### linking
+- if a program consists of only a single file, does it require a linking step? 
+    - yes, if it requires dynamically linked libraries then it will need a linking step done by the OS
+
+### round robin
+- assume time slice is fixed, how to give one process higher priority?
+    - add duplicate of the same process to the queue
+
+### fork
+- if we start with one process and fork() is called three times
+    - what is the max processes we will end up with?
+        - 8
+        - fork();fork();fork();
+    - what is the minimum?
+        - 4
+        - the forks are split and each child doesnt also call fork, use if statements
+
+### parallel processes
+- if we have four CPUs in a multicore processor, what is the largest number of processes that can be running in parallel?
+    - the max: 4
+    - the min: 0, all processes could be blocked for IO
+
+### main tasks of OS
+- what are the two main tasks of the OS?
+- maintain an abstract set of resources, and manage the hardware
+    - abstraction through virtualization, and abstraction for application programs
+    - manage hardware
+        - keep CPUs busy, make best use of memory, etc

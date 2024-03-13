@@ -227,3 +227,7 @@ REM - low voltage, random, fast with sawtooth waves
 - apnea, restless leg syndrome, acaedemic deficits, learning problems, symptoms of ADHD
 - computational speed, impair verbal fluency, decrease creativity and abstract problem solving ability
 
+# 3/12/24
+### Why are there larks and owls?
+- humans evolved to sleep in groups
+- some wake up early, some stay up late to guard the clan

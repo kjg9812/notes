@@ -783,10 +783,11 @@ $\forall v, d_R(v) = min(d_R(v),d_N(v) + link\_metric_{R,N})$
 - you have a central data server and a bunch of islands in Hawaii
 - islands are far away so they dont know if other islands are attempting to transmit
 - if island sends packet and you dont get ack back you assume your packet collided with someone else (transmit at same time)
-- each ilsand transmits with probability $p$
+- each island transmits with probability $p$
 - N sends each tx with prob p, what is the probability of a successful transmission?
     - $P_{Success} = N * p * (1-p)^{n-1}$
     - the probability of one transmission is the probability of tx and the probability of all others NOT transmitting
+    - why multiply by N -> because there are N possible ways of a successful transmission, any of them could have a successful one
 - what is the p that maximizes P_Success?
     - take the derivative and set it to 0 (maximize a function)
     - $p = \frac{1}{n}$
@@ -798,3 +799,118 @@ $\forall v, d_R(v) = min(d_R(v),d_N(v) + link\_metric_{R,N})$
     - you don't know N so you cant calculate 1/N for optimimal p
     - so needs to be adaptive like AIMD
     
+# 3/25/24
+- Note: last time we talked about MAC (medium access control) -> local delivery or last mile delivery
+- there is some medium that needs to be arbitrated for some number of users, it could be things like air or sonar or whatever
+
+### carrier sense
+- ability to detect ongoing transmissions
+- ALOHA is no carrier sense
+
+### CS(carrier sense) in ethernet
+- BUS based ethernet
+    - single cable where multiple computers tap
+    - A can communicate with C but if B tries to communicate with D there is a collision
+    - the BUS is shared so if there's one ongoing transmission another cannot coexist at the same time
+- switch based ethernet
+    - switch with multiple ports
+    - ABCD input and ABCD output
+    - you can have multiple connections at the same time, we just do bipartite matching here like before
+
+### MAC in BUS ETH (CSMA - carrier sense multiple access/CD - collision detection, so CSMA,CD)
+1. before tx a pkt, do carrier sense
+    - check if the medium is currently being occupied
+2. when the medium is idle, tx a pkt and keep checking for collisions
+    - how do you check for collisions? receiving something and compare it to some threshold value, there's an elevated voltage level on the receiver
+3. if there is a collision, back off for a random time and transmit jamming signal
+4. discard ongoing rx pkt if you see a jamming signal
+
+### MAC in Wifi (CSMA/CA - only difference is collision avoidance)
+- absennce of full duplex
+    - cant tx and rx at the same time
+- A's receiver
+    - A's tx to B vs B's tx to A
+    - A's transmission to B will have much higher signal strength
+    - strength of signal goes down as distance increases
+    - so this is why it snot full duplex
+- algorithm:
+1. pick a random backoff interval from $U[1, CW_{max}]$
+2. count down I slots (idle slots)
+3. transmit packet entirely
+4. wait for ack
+5. if no ack, assume lost pkt and double CW
+6. I ~ U[1,CW]
+    - pick a new I
+    - then go back to step 2
+
+### hidden terminal problem
+- terminals A and B are between an acess point AP
+- terminals are too far apart and cant detect whether transmissions are happening, so there is a collision that happens
+- terminal A is hidden from B and B is hidden from A
+- soluiton:
+    - send shorter packets called request to send (RTS) packets
+    - because they are smaller there is less possibility of massive overlap of packets
+
+# 3/27/24
+- the physical layer
+- there is no abstraction anymore, bits (0s and 1s) need to be materialized in some way to be stored and transmitted
+
+### how do you take bits and turn them into a form that can travel between sender/receiver?
+- basically waves (sin or cos)
+- but how do you go from bits 01011001 to waves?
+    - wave is electromagnetic
+    - voltage is the amplitude of the wave
+- map bits to volatages
+    - voltage range -> 0V to 5V
+- one approach
+    - 0 map to 0V
+    - 1 map to 5V
+    - 0-2.5 is 0, 2.5-5 will be 1
+- can we pack more bits into voltages?
+    - 00 is 0V
+    - 01 is 5*1/3V
+    - 11 is 5*2/3V
+    - 10 is 5V
+- tighter packing means more bits but less robustness to noise
+    - so how much noise you expect to see matters
+    - a smaller window with very little cushion room can be misinterpreted easily
+
+### robustness to noise
+- ratio of signal and noise
+- ratio of powers of signal and noise
+- SNR: signal to noise ratio
+- high SNR -> aggressive packing
+    - higher throughput since you can fit more bits in what you send, more capacity
+- low SNR -> conservative packing
+    - low capacity
+- C = B * log(1+S/N)  
+    - shannon hartley theorem
+    - S/N is signal to noise ratio, needs to be put into log, higher S/N basically means more capacity, relationship is not linear
+    - B is bandwidth, its the range of frequencies one can use for communication
+
+### on wireless
+- SNR is lower at the receiver
+- because of 
+    - attenuation
+        - any signal degrades over distances (you hear an ambulance less as it drives away)
+    - multipath
+        - lots of paths that waves go through, but travel at slightly different distances
+    - interference
+        - somebody else can be transmitting at the same time
+- on wired, signals don't degrade as much, multipath doesnt really exist since its in one wire, interference doesnt exist since you have different cables shielded from each other
+
+### transmitting voltages
+- Carrier Signal
+    - AM (amplitude modulation)
+        - change the amplitude to transmit 0 or 1
+    - FM (frequency modulation)
+        - modulate frequency to transmit 0 or 1 (or any bit pattern, do the mapping again)
+
+### errors
+- what is sender sends 000 and receiver receives 001
+    - called a bit flip
+- one solution
+    - parody bit
+    - sender sends 7 bits 0010101(0) -> 00111010 (since the pardody bit tells you it should be even, you know that something went wrong)
+        - if number of 0s is even then send a 0
+        - if number of 0s is odd then send a 1

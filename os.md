@@ -1136,3 +1136,51 @@ main drawbacks:
     - abstraction through virtualization, and abstraction for application programs
     - manage hardware
         - keep CPUs busy, make best use of memory, etc
+
+# 3/27/24
+### concurrency
+- we'll discuss multithreading
+    - threads belonging to the same process
+
+### process vs. threads
+- process has its own address space
+- threads are created within a process
+    - sequential program = one process that contains one thread
+- a thread has:
+    - an execution state (running, ready, etc)
+    - saved thread context when not running
+    - access to the memory and resources of its process ( all threads of a process share this )
+
+### benefits of threads
+- takes less time to create a new thread than a process
+- less time to terminate than a process
+    - process control block contains lots of information about what threads need (same open files, data, etc)
+- switching between two threads takes less time than switching between processes
+
+### thread
+- def: a sequence of related instructions executed independently of other instruction sequences from the same process
+- thread can create another thread
+- threads within the same process share
+    - the process address space
+    - any opened files
+- each thread has its own stack
+- each thread has its own set of registers
+
+### why use threads?
+- parallelism
+- lighter than processes
+- reduction of process blocking due to IO
+
+### different types of threads
+- user level threads
+- kernel level threads
+- hardware threads
+
+### user level threads
+- program that has created threads
+- all thread management is done by the application
+- the kernel is not aware of the existence of threads
+- threads are implemented by a library
+- kernel knows nothing about threads
+- each process needs its own private thread table
+    - thread table is managed by the runtime system

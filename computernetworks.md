@@ -910,7 +910,37 @@ $\forall v, d_R(v) = min(d_R(v),d_N(v) + link\_metric_{R,N})$
 - what is sender sends 000 and receiver receives 001
     - called a bit flip
 - one solution
-    - parody bit
-    - sender sends 7 bits 0010101(0) -> 00111010 (since the pardody bit tells you it should be even, you know that something went wrong)
+    - parity bit -> detect 1 bit error
+    - sender sends 7 bits 0010101(0) -> 00111010 (since the parity bit tells you it should be even, you know that something went wrong)
         - if number of 0s is even then send a 0
         - if number of 0s is odd then send a 1
+
+# 4/1/24
+### rectangular code
+- say you have 16 bits and organize them in a 4x4 grid
+- compute row wise and column wise parity bits (either 1 or 0 for even or odd)
+- bundle it all together and transmit it
+- coding rate = useful bits/total bits (in this case its 16/24, 16 useful bits, 8 parity bits)
+
+### bit rate selection
+- with a range of voltages, how well can you pack bits
+- there can be two voltages, so 2 dimensions for the ranges
+    - constellation diagram
+- model for bit rate adaptation
+    - bit rate = ((1-BER) * (bits/symbol))/symbol time
+    - symbol time is constant
+    - bits/symbol is tightness of packing
+- BER(bit error rate) goes down as SNR(signaltonoiseratio:aggressive or conservative packing) goes up
+- tradeoff is tigther packing for higher bits/symbol but higher BER
+    - or looser packing for lower bits/symbol and lower BER
+- if you fix an SNR, there is a best sceme to use for throughput
+
+### sample rate (algorithm)
+1. send data @ highest packing
+2. stop after 4 successive packet failures
+3. repeat until you find a new packing by prog. dec. packing
+4. every 10 data packets, pick randomly from an eligible set of packings and switch to it
+- similar to reinforcement learning
+
+### transmission time
+- transmission time = backoff time + (# of retries) * (packet length)/bit rate

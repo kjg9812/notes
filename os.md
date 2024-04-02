@@ -1181,6 +1181,50 @@ main drawbacks:
 - all thread management is done by the application
 - the kernel is not aware of the existence of threads
 - threads are implemented by a library
-- kernel knows nothing about threads
+- kernel knows nothing about threads, it only sees one thread
 - each process needs its own private thread table
     - thread table is managed by the runtime system
+
+# 4/2/24
+### user level threads (ULTs)
+- advantages
+    - thread switch does not require kernel mode
+    - scheduling of threads can be application specific
+    - can run on any OS
+- disadvantages
+    - a system call by one thread can block all threads of that process
+    - in pure ULT, multithreading cannot take advantage of multiprocessing/multicore
+- does state model need to change?
+    - will MLFQ contain processes or threads?
+        - scheduler forgets about processes and only focuses on threads
+            - but a process with more threads may have more priority on the CPU
+            - so the scheduler has to consider threads with processes in mind
+
+### kernel level threads
+- OS is aware of the threads
+- thread management is done by the kernel
+    - no thread management is done by the application
+- windows OS and linux threads are examples of this approach
+
+### implementing threads in kernel space
+- kernel knows about and manages threads
+- creating/destroying/other related oeprations for a thread involves a system call (since all done in OS)
+- advantages
+    - kernel can simultaneously schedule multiple threads from the same process on multiple procesors
+    - if one thread in a process is blocked, the kernel can schedule another thread of the same process
+    - kernel routines can be multithreaded
+- disadvantages
+    - the transfer of control from one thread to another within the same process requires a switch to the kernel
+
+### combined hybrid approach
+- thread creation is done completely in user space
+- multiple ULTs from a single appliaction are mapped onto (smaller or equal) number of KLTs
+
+### relationship between ULTs and KLTs
+- 1:1
+    - user level thread maps to kernel level thread
+- N:1 (user level threads)
+    - kernel is not aware of the existence of threads
+    - eg. early version of java
+- M:N
+    - not used by OS usually

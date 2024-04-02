@@ -231,3 +231,5 @@ REM - low voltage, random, fast with sawtooth waves
 ### Why are there larks and owls?
 - humans evolved to sleep in groups
 - some wake up early, some stay up late to guard the clan
+
+# 4/2/24

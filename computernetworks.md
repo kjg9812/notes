@@ -944,3 +944,86 @@ $\forall v, d_R(v) = min(d_R(v),d_N(v) + link\_metric_{R,N})$
 
 ### transmission time
 - transmission time = backoff time + (# of retries) * (packet length)/bit rate
+
+# 4/3/24
+### setup
+- sender S and receiver R
+
+### security properties
+- what properties do we want between this sender and receiver
+- auth (authentication):
+    - can S be sure that it is talking to the real R
+- conf (confidentiality):
+    - can S and R be sure that no one else knows what they're talking about
+    - for S & R's eyes only
+    - data is protected, but world knows that S and R are talking
+- integrity:
+    - can S and R be sure that the message received by R was an exact copy of what S intended to send (no tampering along the way)
+    - data from S to R is not tampered with
+- TLS provides these three properties
+- other properties you might care about
+    - privacy/anonymity
+        - dont let world know that S and R are talking
+        - identities of S and R are hidden
+
+### Physical Security
+- how do you translate these properties to physical world
+- auth:
+    - drivers license (an ID)
+- conf:
+    - lock (physical locks)
+- integrity:
+    - seal (like sealing a bag at mcdonalds for postmates)
+- these are built upon hardness assumptions (making something hard to do)
+
+### hardness assumptions
+- these physical can inspire digital security
+- cryptography: design hard to solve math problems (hard for computers w/ bounded resources)
+- ex. prime factorization problem
+    - take an integer and break it into a product of primes
+    - ex. 20 = 2\*5\*5
+    - when theres several hundred digits it's hard
+    - also semiprimes: products of exactly 2 possibly identical primes
+        - ex. 1000 computers running for 2 years for factoring a 700 bit semiprime
+
+### crypto primitives
+1. PubEnc(pubkey, cleartext) -> cipher
+2. PubDec(privkey, cipher) -> cleartext
+3. SymEnc(key, clear) -> cipher
+4. SymDec(key, cipher) -> clear
+- sym keys are same, in pub they are different
+- why do we need both?
+    - pub can be for establishing communication at first (you dont have prexisting arrangement with receiver)
+    - then sym can be used when you've already established communication, the math is simpler (for performance)
+5. Sign(privkey, msg) -> signature (for this message i sign off on it, authorize it)
+6. Verify(pubkey, msg, signature) -> true/false
+    - way of checking code and check that msg was signed by particular priv key
+- these two are RSA
+7. MACS
+    - macs much faster than digital signatures like sym is faster than pub
+8. CERTIFICATE: ENTITY NAME + ENTITY PUBKEY + SIG OF ENDORSER + ENDORSER'S PUB KEY + NAME OF ENDORSER
+#### ways to create a shared key?
+9. Diffie Helman Key Exchange
+    - A and B have bits of a shared key but shared key never travels along the medium, prob just check def on internet it was only verbally said
+    - shared key never seen on the channel
+10. use options 1 and 2 to create a shared key
+
+### TLS
+- AUTH:
+    - CLIENT AUTH
+        - how do clients authenticate themselves to servers?
+            - passwords
+        - why dont we ask clients to use certificates?
+            - in certain settings it makes sense (like using a computer on university campus)
+            - but passwords are just more convenient
+    - SERVER AUTH (certificates + 2 factor authentication)
+        - CA (certificate authority) endorses server
+            - but someone can breach this, so have someone else certify this CA
+            - needs to stop somewhere, so there's a root CA (it has a certificate installed on most browsers)
+            - called a chain of trust
+    - acquiring certs:
+        - apply to CA
+        - Let's Encrpyt
+            - if you have IP address and can demonstrate ownership of IP address, you get a certificate that you can use for more authentications to other clients
+            - automates process of application basically
+            - lets encrpyt still needs to be trusted, but pretty reliable and changed economics of getting certificates

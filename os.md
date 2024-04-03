@@ -1228,3 +1228,47 @@ main drawbacks:
     - eg. early version of java
 - M:N
     - not used by OS usually
+
+# 4/3/24
+### example 2
+- concurrency
+- what APIs does OS give you to write parallel code?
+    - creating a thread
+    - killing a thread
+    - waiting for a thread (to impose a sequence)
+    - locking
+- main thread in the function
+- more threads created with pthread_create
+- what is pthread_join?
+    - wait to return until the thread finishes
+
+### possible executions of example 2
+- non deterministic output
+- so the order of what happens can be whatever, because it depends on the scheduler
+- why is the counter wrong on the second execution and the third?
+    - counter = counter + 1
+    - two different threads trying to update the same piece of data, so you don't know when a thread will start executing
+
+### POSIX Threads
+- Portable Operating SysTEM Interface
+- is an IEEE standard
+- API
+- Maintain compatibilities among OSes
+- Pthreads -> a POSIX standard for threads
+
+### POSIX Threads (Pthreads)
+- low level threading libraries
+- native threading interface for linux
+- use kernel level thread (1:1 model)
+- developed by the IEEE committees in charge of specifying a portable operating system interface (POSIX)
+- shared memory
+- because threads within the same process share resources (including all the IO devices):
+    - changes made by one thread to shared system resources (such as closing a file) will be seen by all other threads
+    - two pointers having the same value point to the same data
+    - therefore, requires explicity synchronization by the programmer
+- implemented with a pthread.h header
+    - ie #include <pthread.h>
+- to compile with GNU compiler, 2 methods:
+    - gcc/g++ ./progname -lpthread
+    - gcc/g++ -pthread ./progname
+- programmers are responsible for synchronizing access (protecting) globally shared data

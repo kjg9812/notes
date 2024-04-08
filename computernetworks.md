@@ -1027,3 +1027,68 @@ $\forall v, d_R(v) = min(d_R(v),d_N(v) + link\_metric_{R,N})$
             - if you have IP address and can demonstrate ownership of IP address, you get a certificate that you can use for more authentications to other clients
             - automates process of application basically
             - lets encrpyt still needs to be trusted, but pretty reliable and changed economics of getting certificates
+
+# 4/8/24
+### IPSEC
+- encrypt IP payload
+    - TCP header part of payload
+    - UDP header part of payload
+        - benefits for something like media streaming that uses UDP
+- used in secure virtual private networks
+    - like logging into NYU VPN
+        - group of computers located in different parts of the world can pretend to be on the same local area network
+    - security is important because not only do you want to connect together, you want to keep information transmitted protected from eavesdroppers
+- connectionless
+    - handshakes dont make sense when there's no notion of a connection
+    - so how do you establish shared keys across a pair of entities that want to do encrpytion
+    - get the keys that you need for communication before the communication starts
+        - like go to a coffee shop and agree on a key beforehand, then send your data
+
+- tor provides anonymity
+    - each server or client only knows about the  next TOR server around it
+    - resilient overlay networks?
+
+### failure modes
+1. CA Compromise
+2. CA (certificate authority) not validating enough
+    - like DMV not checking enough when giving drivers license
+3. stolen private keys
+    - assumption that private key stays private fuels everything else
+    - but if private key is not private than nothing else matters
+4. hard problems no longeer hard
+
+### Heart Bleed (ex. of implementation bug)
+- client sends a packet to the server
+    - also sends length field and random bytes
+- heartbeat extension echoes back to the client what the client sent
+- imagine a client sends only 7 bytes out of a labeled length 50 bytes
+    - what it shouldnt do: copies 43 bytes out of its own memory and sends that back with the 7
+        - a hacker could put 2^16 and send 1 byte, then server pulls out stuff from remote memory (this could be important stuff)
+
+## network surveillance
+- adversary: nation state
+    - resource rich
+    - money, computation, legal provisions
+- surveillance: 
+    - watching actions/location without them knowing about it, telemetry
+        - eavesdropping w/o knowing
+        - detecting threats/anomalies
+- censorship:
+    - restricting or blocking content
+    - restricting broadcast/voice
+
+### surveillance
+1. PRISM
+2. Unencrpyted data
+    - google, SSL to gogole frontend, but in googles own infrastructure there is no SSL, no encryption
+3. Metadata unencrypted
+4. Compromised CAS
+5. Private keys leaked
+6. Logjam attack
+    - uses a bunch of problem structure to make the discrete log problem easy enough (budget like a few million dollars)
+
+### censorship
+1. above layer 5
+2. DNS
+3. HTTP Payload
+4. TCP Port Blocking

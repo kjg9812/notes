@@ -1229,7 +1229,7 @@ main drawbacks:
 - M:N
     - not used by OS usually
 
-# 4/3/24
+# 4/2/24
 ### example 2
 - concurrency
 - what APIs does OS give you to write parallel code?
@@ -1272,3 +1272,131 @@ main drawbacks:
     - gcc/g++ ./progname -lpthread
     - gcc/g++ -pthread ./progname
 - programmers are responsible for synchronizing access (protecting) globally shared data
+
+# 4/4/24
+### thread execution
+- two threads trying to update variable at the same time
+    - race condition
+
+### solution for race condition
+- busy waiting
+- every thread computes its own y
+- flag is 0
+- basically slow down a thread and make it do nothing until its allowed to
+- but
+    - busy doing nothing
+    - serialization
+    - optimizing compilers can mess with it
+
+### mutexes
+- mutex = mutual exclusion
+- means of protecting shared data when multiple writes occur
+- acts like a lock protecting access to a shared data resource
+- only one thread can lock (or own) a mutex variable at any given time
+
+### how are locks implemented?
+- with hardware there is an instruction set to build locks
+- the OS provides techniques to deal with several threads that need to lock
+
+### solution 1: controlling interrupts
+- early solution needs special hardware instructions
+- something that happens during the lock
+- ensures that the code within the critical section will not be interrupted
+
+### solution 2: using loads and stores
+- while a variable (mutex) is 1, which means its being used, dont do anything
+- when its not anymore then you can set it to 1 and you have that lock
+
+# 4/9/24
+- how to deal with critical sections?
+    - locks
+    - there are many different implementations though
+
+### solution 3: test and set
+- a hardware support solution
+    - a machine language instruction
+- today all systems support this feature
+- steps:
+    - fetch old value at old pointer
+    - store new into old pointer
+    - return old value
+- evaluating spin locks
+    - correctness: we have a correct lock
+    - fairness: no fairness is guaranteed. a thread can wait forever for the lock
+    - perforamnce:
+        - in a single CPU: bad
+            - OS schedule will pick one and it could basically just spin and wait
+        - for multiple CPUs: not as bad, but still bad
+
+### solution 4: compare and wap
+- another hardware support solution
+- similar to test and set but with an expected value
+
+### solution 5: load linked and store conditional
+- another hardware support solution
+- instructions provided by PowerPC and ARM (and old architectures like MIPS and Alpha)
+- load linked just reads something from memory
+- storeconditional asks if no update to that place in mmeory since loadlinked to that address, then you can return 1 for success and update that pointer
+- else, you cannot update and return 0
+- unlock will set flag to 0
+- lock
+    - infinite loop
+    - spin while until the flag is 0
+    - if another thread has set the lock, then return
+        - if set to 1 then we get the lock, otherwise we try again
+- correct execution, no fairness guaranteed, and spin locks waste CPU cycles
+
+### Solution 6: fetch and add
+- using fetch and add to build ticket locks
+- fetch and add returns old value and increment by 1
+- while lock does not equal my turn, spin
+- unlock increments turn by 1
+- at some point the turrn will loop back to you, so there are ticks each thread has a turn
+- correct, ensures progress for all threads, but still spin lock
+
+### Solution 7: no spinning
+- if you are going to spin, just give up the CPU
+- nees now an OS support to allow thread to deschedule itself -> thread moves from running to ready
+- so while test and set, flag == 1, then yield() and give up the CPU
+- code is correct, reduce CPU cycle waste, but increase context switches, and no guarantees for fairness where a thread may wait forever
+
+### solution 8: sleeping instead of spinning
+- if a thread is not getting the lock, put it to sleep and add it to a queue of waiting threads
+    - thread is blocked for the lock
+- when the lock is released, wake up one of the threads
+
+### locks arent enough
+- condition variables are a queue that threads can put themeselves on when some condition is not yet true
+- synchronization
+- when the condition is true, one of the threads waiting will be signaled to wake up and proceed
+    - that is, it moves from blocked to ready, not necessary to running directly
+- without condition variables, the programmer would need to have threads continually polling (possibly in a critical section)
+    - very resource consuming since the thread would be continuously busy in this activity
+    - condition variable is a way to achieve the same goal without polling
+
+### OS needs to provide two primitives for condition variables
+- syntax will differ among OSes
+- wait()
+    - assumes there is a lock acquired over the condition variable
+    - releases the lock
+    - puts calling thread to sleep (atomically with releasing the lock)
+- signal()
+    - acquires the lock over the condition variable
+    - wakes up one of the sleeping threads over this variable
+
+# 4/11/24
+- why do locks save us from the deadlock? or some question idk
+    - when condition done is true, there is a context switch, but wait is not called yet so child will start executing, child will try to lock but wait has not executed yet so child will be blocked
+### producer/consumer
+- producers: a group of threads
+    - generate data items
+    - place them in a buffer
+- consumers: a group of threads
+    - grab items from the buffer
+    - consume the data
+- the buffer is a shared resource -> need synchronization to access it
+- buffer is a critical section
+    - but is it enough to use locks?
+    - regardless of locks, consumer will try to get from the buffer
+        - want to only call get when the count == 1
+    

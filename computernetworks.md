@@ -1092,3 +1092,50 @@ $\forall v, d_R(v) = min(d_R(v),d_N(v) + link\_metric_{R,N})$
 2. DNS
 3. HTTP Payload
 4. TCP Port Blocking
+
+# 4/10/24
+### Definition os DOS attack
+- attacker attempts to make a machine/net resource unavailable to its users by disrupting services
+- there is a notion of a scarce resource
+    - examples: network bandwidth, CPU cycles, IO bandwidth
+- DDOS: distributed denial of service
+    - attackers aren't just one machine, but a collection of machines geographically dispersed
+    - signals of a popular service are that various requests will come in from the world, so its hard to distinguish DDOS from popular demand
+    - so they're hard to track down and nullify all attackers
+    - hard to distinguish from very popular servers
+- goals: 
+    - extortion/blackmail/revenge
+    - depleting money of victim
+    - activism
+
+### examples
+1. app level: requests/queries to a DBMS
+    - resource: database's capacity to serve queries (like queries/second that you're depleting)
+2. transport level: TCP SYN FLOOD
+    - sender sends a syn, receiver sends an ack, but the sender doesnt respond with syn + ack (connection never closes)
+    - a defense: receiver can just time out
+        - but the sender can counter by sending another syn
+3. transport level: open many connections to a victim service
+    - at what point will service become unavailable? when number of connections you can have on server (number of tcp ports) is full
+4. API level: requests to google maps
+5. network bandwidth: 
+    - flood network bandwidth with as many packets as possible to get to capacity of link
+    - do this with UDP, no concept of congestion control
+6. Fork bomb
+    - fork a bunch
+    - run out of PIDs
+    - specific to a machine
+7. ICMP Flood Pings
+    - on low bandwidth links
+    - flood with ping packets
+8. Malformed Packets
+    - control plane in routers
+9. Land Attack:
+    - (local area network denial)
+    - SRC and DST address are the same value, value is the address of target machine
+    - it will reach target machine and just loop on that packet again and again
+
+### scope
+- degradation of service is probably still denial of service
+- adding a few seconds of latency costs a lot of money
+

@@ -1139,3 +1139,55 @@ $\forall v, d_R(v) = min(d_R(v),d_N(v) + link\_metric_{R,N})$
 - degradation of service is probably still denial of service
 - adding a few seconds of latency costs a lot of money
 
+# 4/15/24
+### Video Streaming
+- Stored
+    - tv shows
+    - youtube
+    - movies
+- live
+    - sports
+    - concerts
+    - twitch
+- video streaming vs video conferencing (skype, hangouts, zoom)
+    - conferencing is different because a user is actively interacting with content instead of passively consuming it
+
+### Storing Videos
+- frame rate = 30 Hz/ 60 Hz
+    - basically 30 fps, 60 fps
+    - 1/30 or 1/60 is the inter frame gap
+- each frame is a 2d array, each cell has an RGB value (8 bits for R, 8 bits for G, etc)
+
+### compressing videos
+- redundancies
+    1. background may remain static across frames
+        - inter frame redundancies (across frames pixels are the same)
+    2. within image redundancies
+        - intra frame redundancies
+- neural super resolution
+    - input to neural net is low res image, output is a high res image
+    - videos unified by something (like theyre nba games, movies, etc)
+
+### inter frame
+- motion vectors
+- draw an arrow between two blocks
+    - to predict the block in the next frame
+
+### video streaming
+1. multiple levels
+2. support clients w/ varying network capacities
+
+### strawman for video streaming
+1. Donwload video at highest quality level
+    - offline mode
+    - takes time to do this, startup delay is poor
+2. Download video at lowest level
+    - but its poor quality
+- video: c bits/second of stored video
+- network capacity: c bits/second
+- C > C_L : continuous, zero startup , no glitch playback
+    - input greater than output
+    - a queue building up is a good thing, the vdieo player is never starving for bits
+- C < C_L
+    - causes rebuffering
+    - video player does not have bits to pull

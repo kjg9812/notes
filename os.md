@@ -1376,11 +1376,11 @@ main drawbacks:
 
 ### OS needs to provide two primitives for condition variables
 - syntax will differ among OSes
-- wait()
+- `wait()`
     - assumes there is a lock acquired over the condition variable
     - releases the lock
     - puts calling thread to sleep (atomically with releasing the lock)
-- signal()
+- `signal()`
     - acquires the lock over the condition variable
     - wakes up one of the sleeping threads over this variable
 
@@ -1400,3 +1400,56 @@ main drawbacks:
     - regardless of locks, consumer will try to get from the buffer
         - want to only call get when the count == 1
     
+# 4/16/24
+- `assert` stops program with error message if condition is not true
+- cond_wait assumes you have acquired a lock
+    - it will release a lock, then it will put you to sleep
+- cond_signal
+    - wakes up one of the threads that are asleep
+- in producer consumer example, specific example
+    - assume count = 1
+    - start with producer
+    - if count == 1
+        - then mutex lock will be released, and producer is put to sleep
+    - consumer will go, consumer will acquire lock easily because it has been released by the wait above
+        - count == 0 is false
+            - so get() at line 23
+        - wake up sleeping producer(from locked to ready)
+        - then it will unlock and print ...
+
+### deadlocks
+- potential deadlocks should be detected
+
+### resources
+- anything that must be acquired, used, and released over the course of time
+- hardware or software
+- preemptable: can be taken away from the process with no ill effect
+    - ex. CPU
+- nonpremtable: cannot be taken away from the process without causing the computation to fail
+
+### categories
+- reusable
+    - can be safely used by one process at a time and is not depeted by that use
+        - ex. processors, IO channels, main and secondary memory, device, data structures like files, databases, and locks
+- consumable
+    - one that can be created (produced) and destroyed(consumed)
+        - ex. interrupts, signals, ...
+        - IO buffers
+
+### conditions for resource deadlocks
+1. each resource is either currently assigned to exactly one process or is available
+2. processes currently holding resources that were granted earlier can request new resources
+3. resources previously granted cannot be forcibly taken away from a process. they must be explicitly released by the process holding them
+4. there must be a circular chain of two or more processes, each of which is waiting for a resource held by the next member of the chain
+
+### how to deal with deadlocks
+1. just ignore the problem!
+    - lmfao
+2. let deadlocks occur, detect them, and take action
+3. dynamic avoidance by careful resource allocation
+4. prevention, by structurally negating one of the four required conditions
+
+### ostrich algorithm
+- ignore problem lol
+- ostrich head in dirt picture
+

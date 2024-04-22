@@ -1191,3 +1191,106 @@ $\forall v, d_R(v) = min(d_R(v),d_N(v) + link\_metric_{R,N})$
 - C < C_L
     - causes rebuffering
     - video player does not have bits to pull
+
+# 4/17/24 Netflix Guest Lecture
+### content delivery network
+- want content as close as possible to user
+- deploy content delivery servers in ISPs(small catalog of content)
+    - give content servers to ISP for free and they handle the maintenance
+    - all content is encrypted
+- deploy IXP to peer with ISPs that fulfill full catalog
+    - the small ones in the ISPs themselves also connect to this
+    - operated by netflix themselves
+
+### content server types
+- flash servers
+    - io optimized servers
+        - ssd drives
+    - high io bandwidth
+    - limited storage space
+    - ex. popular content goes on these
+- storage servers
+    - storage optimized servers
+        - spinning disk
+    - low io bandwidth
+    - high storage capacity
+
+### content placement
+- embedded in ISP
+    - lower latency
+    - less storage
+- IXP
+    - higher latency
+    - more storage
+- when video not available in local ISP
+    - need to go to IXP
+- serve more than 95% in local ISP
+
+### predicting content popularity
+- each content server will serve the most popular content
+
+### netflix approach
+- take both network prediciton and buffer level into our design
+- quick start: pre cache video while browsing
+    - load stuff that you have on the cursor
+- bootsrap video quality: record throughput history
+    - on the device
+- offline download
+- A/B tests
+
+### A/B test
+- allocate two random group of people
+- two different ideas
+- collect metrics, then compare and analyze to see which idea is better
+
+# 4/22/24
+### client server arch
+- clients and servers
+
+### P2P
+- all peers instead of clients or servers
+- connect into the internet
+- reasons for P2P:
+    - no special requirements for servers
+    - decentralization
+        - you dont need a centralized data center in one place
+- drawbacks of P2P:
+    - need enough peers
+    - need peers to follow protocol
+    - need to trust peers
+    - incentives
+    - need to be part of the p2p network
+    - hard to ensure data is durable
+    - variable performance
+
+### history
+- online forums: usenet & IRC
+- napster
+    - music sharing and search interface
+    - rise of illegal content
+    - P2P apps consume significant network capacity
+
+### bit torrent
+- UI: much simpler than napster
+- if i wanted a file, how do i know who has it?
+    - torrent file: contains name of file and the url of a tracker server, list of pieces of the file, SHAI/MD5 sum of these pieces
+    - can contact the tracker server (who owns which piece of the file)
+- note: bit torrent is not purely decentralized -> there is still some centralized place to get the torrent file, the tracker server is also centralized
+
+### which pieces to download first?
+- sequential (TCP like)
+    - Head of line blocking
+- rarest first
+    - peers might dissapear
+    - so download the rarest one so you can make it less rare
+- also do parallel tcp connections so that you can transmit more than capacity
+
+### incentives (tit for tat)
+- upload data to peers who upload most data to you
+
+### why is BT no longer popular?
+- illegal content
+- consuming network capacity
+- legal services (like youtube, netflix, etc.)
+    - simpler user interfaces as well
+    

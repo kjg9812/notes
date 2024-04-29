@@ -1453,3 +1453,195 @@ main drawbacks:
 - ignore problem lol
 - ostrich head in dirt picture
 
+# 4/18/24
+### deadlock detection and recovery
+- the system does not attempt to prevent deadlocks
+- it tries to detect it when it happens
+- then it takes some action to recover
+- several issues here:
+    - deadlock detection with one resource of each type
+    - detection with multiple resources of each type
+    - recovery from deadlock
+
+### deadlock detection: one resource of each type
+- construct a resource graph
+- if it contains one or more cycles, a deadlock exists
+- what is the best time for the OS to check the lock?
+    - anytime a change happens in the graph
+        - when a process asks for IO, or gets IO, etc.
+
+### multiple resources of each type
+- n processes and m resource types
+- allocation matrix
+- request matrix
+- a process is marked if they are able to complete and hence not deadlocked
+
+### when to check for deadlocks
+- every time a resource request is made
+- check every k minutes
+    - maybe processes are asking for resources often, so just do it after a time slice
+- when CPU utilization has dropped below a threshold
+
+### recovery from deadlock
+- whats next after detecting
+- some options:
+    - recovery through preemption
+    - recovery through rollback
+    - recovery through killing processes
+
+### preemption
+- temporary take a resource away from its owner and give it to another process
+- highly dependent on the nature of the resource
+
+### rollback
+- have processes checkpointed periodically
+- checkpoint of a process: its state is written to a file so that it can be restarted later
+- in case of a deadlock, a process that owns a needed resource is rolled back to the point before it acquired that resource
+
+### killing processes
+- kill a process in the cycle
+- can be repeated (kill other processes) til deadlock is resolved
+- the victim can also be a process NOT in the cycle
+    - in some situations this can work, since the process can complete
+
+### safe and unsafe states
+- a state is said to be safe if there is one scheduling order in which every process can run to completion even if all of them suddenly request their maximm number of resources immediately
+- an unsafe state is NOT a deadlock state, but a potential deadlock
+- a safe state means that the system can guarantee that all process will finish
+
+### the bankers algorithm
+- djikstra
+- checks if granting the request leads to an unsafe state
+- if it does, the request is denied
+
+### deadlock prevention
+- attacking the mutual exclusion
+- can be done for some resources (eg the printer) but not all
+
+# 4/23/24
+### IO
+- why when we design motherboards are there several BUSes?
+    - connecting several pieces of the bus will make it work at the speed of the slowest device
+    - so need buses at different speeds
+    - a bus that is fast is expensive so it needs to be short
+        - another hierarchy question, the memory bus is closest to CPU and memory
+        - so peripheral IO bus is at the bottom and is designed for devices meant to be slow like USB
+
+### categories of IO devices
+- external devices that engage in IO with computer systems are in three categories
+1. human readable
+    - suitable for communicating with computer user
+    - printers, terminals, video display, keyboard, mouse
+2. machine readable
+    - suitable for communicating with electronic equipment
+    - disk drives, USB keys, sensors, controllers
+3. communication
+    - suitable for communicating with remote devices
+    - ethernet cards, wifi adapters
+
+### simple definition
+- move data from IO device to processor using some modules and buffers
+- this is the way the processor deals with the outside world
+
+### the OS and IO
+- OS controls all IO devices
+- provides an interface between the devices and the rest of the system
+
+### generic IO device
+- register for status, command, data
+- has a micro controller, memory, other chips
+
+### efficient OS device interaction
+- polling
+- interrupts
+- DMA
+
+### interrupts
+- OS issues a request and puts the calling process to sleep
+- OS context switches to another process
+- when done, the device raises and interrupt
+
+### polling vs interrupts
+- if the device is fast, it may be best to poll
+- the cost of interrupt handling and context switch may outweight the benefit of interrupts
+- if a device is slow, then interrupts is better
+
+### DMA
+- direct memory access
+- it is better not to bug the OS with a lot of overhead when moving a large chunk of data
+- DMA
+    - a chip in the system that orchestrates transfers between devices and main memory without CPU intervention
+- OS tells DMA where the data lives, how much to copy, etc. the OS is done with the transfer and can do something else
+- when the DMA completes, it raises an interrupt telling the OS the operation is done
+    - how is this different from interrupt?
+    - in interrupt it says lets move 64 bits from disk to memory, 
+- it is not efficient for the CPU to request data from the IO one byte at a time
+- the dma controller has access to the system bus independent from the CPU
+
+### controller and device
+- each controller has frew registers used to communicate with CPU
+- by writing reading into those registers, the OS can control the devices
+- these are also data buffers in the device that can be read/written by the OS
+
+### how does the OS deal with controllers and devices?
+- two main approaches
+    - IO instructions
+        - privileged
+    - memory mapped IO
+
+### io instructions
+- each control register is assigned an IO port number
+- the set of all IO ports from the IO port space
+- IO port is accessed with special instructions
+- IO port space is protected
+
+### memory mapped iO
+- map control registers into the memory space
+- each control register is assigned a unique memory address
+- advantages
+    - device drivers can be written entirely in C
+    - no special protection is needed from OS
+- disadvantages
+    - caching a device control register can be disastrous
+    - hardware complications
+    
+# 4/25/24
+### the big picture
+- use some programming language like C and its standard libraries (include std.h etc)
+
+### device independent IO software
+- uniform interfacing for device drivers
+    - trying to make all devices look the same
+    - for each class of devices, the OS defines a set of functions that the driver must supply
+    - this layer of OS maps symbolic deice names onto proper drivers
+
+### device drivers
+- prob not written by OS designers
+- device companies usually write these
+- enable OS to talk to that specific device
+- device specific code for controlling the device
+    - read device registers from controller
+    - write device registers to issue commands
+- can be part of the kernel or at user level
+- main functions
+    - receive abstract read/write from layer above and carry them out
+    - initialize the device
+    - log events
+    - manage power requirements
+- drivers must deal with events such as a device removed or plugged
+
+### HDD
+- hard disk drive
+- ssd
+    - no moving parts, so no noise faster startup
+    - deterministic read performance
+        - performance does not depend on the location of data
+        - as a programmer, this is good because you know this operation will have this speed, and you can decide how big the buffer needs to be
+    - disadvantages:
+        - more expensive, latency is high, limited number of writes
+            - after wish, the cell becomes unusable
+
+### the flash - flash drives
+- data saved to a pool of NAND flash
+- made of transistors but
+    - unlike designs used in DRAM, the ones used in flash retain their charges even when not powered up -> non volatile

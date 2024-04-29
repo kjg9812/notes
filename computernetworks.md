@@ -1293,4 +1293,65 @@ $\forall v, d_R(v) = min(d_R(v),d_N(v) + link\_metric_{R,N})$
 - consuming network capacity
 - legal services (like youtube, netflix, etc.)
     - simpler user interfaces as well
-    
+
+# 4/29/24
+### prog. of networks
+- what might you want to program?
+    - route of packet
+    - block packets
+    - inter-router communication
+    - change packets (headers, rewrite dst address, redirect to a proxy)
+    - encryption
+- control and data plane programability
+- also programability of hosts and routers
+
+### hosts vs routers
+- hosts generate and consume packets
+- routers blindly forward packets
+- end to end principle
+    - put application logic in hosts so that routers and the network can evolve
+- host prog. -> network interface card (NIC), kernels, net. stack
+- router/switch/AP/base station prog.
+    - something like multicast that sends info to multiple routers
+
+### ctrl vs data plane
+- control plane: determines routes
+    - in action during topology or policy changes
+- data plane: enforces/follows routes
+    - in action on every packet that arrives/is sent out
+
+### history of net. prog.
+- IMP: interface message processor
+    - the first router on the internet
+    - took a mini computer + software (for networking) to create the IMP router
+        - can support O(10) ports each port 50 kbit/s
+    - so fundamentally if you want to change the functionality, you just change the software, that's why thinking of a router as a minicomputer with software is helpful
+- until mid 1990s this^ was the thinking
+    - but changed bc of growing traffic volumes, so web and ISPs came up
+- router
+    - data plane
+        - data plane burnt into dedicated hardware
+            - M40: Data plane in ASIC
+            - but now harder to make it programmable because its higly specialized specific hardware
+    - ctrl plane
+        - software on some processor
+
+### SDN
+- 4D: prog. of AT&T's backbone network
+- they want to make sure nothing inside of the network is overly congested, so no queues building up
+    - this is traffic engineering
+- prog of routing: data center networks (B4, SWAN)
+    - similar traffic engineering problem
+- ethane -> openflow
+1. separate out ctrl plane from data plane
+2. standard interface b/w ctrl & data planes -> called openflow
+- ex. 
+    - say you have routers with routing tables
+    - send information about itself and its neighborhood to some central location
+        - this could be the ctrl plane in a single computer (or multiple computers implementing a ctrl plane)
+        - build up graph of all this info, then run graph algs
+        - prior to this, you'd run a distributed algorithm and worry about who knew how much etc, and if anything fails the distributed alg becomes more complicaed
+    - the standardized interface is adding and removing entries from tables in control plane and in routing tables at each router -> openflow
+
+### prog. data plane
+- highest data plane in ASICS
